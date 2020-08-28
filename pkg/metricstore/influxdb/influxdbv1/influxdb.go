@@ -67,17 +67,20 @@ func Initialize(config Config) error {
 }
 
 func (s *Storage) WriteMetric(metrics map[string]interface{}) error {
-	bp, err := s.parseMetric(metrics)
-	if err != nil {
-		logrus.Error("Failed to parse collector metrics to influxdb v1")
-		return err
-	}
-	for _, influx := range s.Clients {
-		if err := influx.Write(bp); err != nil {
-			logrus.Error("Failed to write influxdb")
+
+	//for _, metrics := range vmMetrics{
+		bp, err := s.parseMetric(metrics)
+		if err != nil {
+			logrus.Error("Failed to parse collector metrics to influxdb v1")
 			return err
 		}
-	}
+		for _, influx := range s.Clients {
+			if err := influx.Write(bp); err != nil {
+				logrus.Error("Failed to write influxdb")
+				return err
+			}
+		}
+	//}
 	return nil
 }
 
@@ -110,25 +113,11 @@ func (s Storage) parseMetric(metrics map[string]interface{}) (influxdbClient.Bat
 	}
 
 	now := time.Now().UTC()
-
-	for vmId, v := range metrics {
-		tagArr := map[string]string{}
-		tagArr["vmId"] = vmId
-
+	// TODO: Val name
+	for _, v := range metrics {
 		vToMap := v.(map[string]interface{})
-		tagMapsInterface := vToMap["tag"].(map[string]interface{})
-
-		tapMapsString := make(map[string]string)
-		for k, v := range tagMapsInterface {
-			tapMapsString[k] = v.(string)
-		}
-
-		tagArr["nsId"] = tapMapsString["nsId"]
-		tagArr["mcisId"] = tapMapsString["mcisId"]
-		tagArr["osType"] = tapMapsString["osType"]
-
-		delete(vToMap, "tag")
-
+		tagArr := vToMap["tagInfo"].(map[string] string)
+		delete(vToMap, "tagInfo")
 		for metricName, metric := range vToMap {
 			metricPoint, err := influxdbClient.NewPoint(metricName, tagArr, metric.(map[string]interface{}), now)
 			if err != nil {
@@ -136,6 +125,7 @@ func (s Storage) parseMetric(metrics map[string]interface{}) (influxdbClient.Bat
 				continue
 			}
 			bp.AddPoint(metricPoint)
+
 		}
 	}
 	return bp, nil

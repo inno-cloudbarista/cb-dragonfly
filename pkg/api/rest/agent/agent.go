@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cloud-barista/cb-dragonfly/pkg/api/rest"
-
 	"github.com/labstack/echo/v4"
+
+	"github.com/cloud-barista/cb-dragonfly/pkg/api/rest"
 
 	"github.com/cloud-barista/cb-dragonfly/pkg/core/agent"
 )
@@ -33,9 +33,27 @@ func InstallTelegraf(c echo.Context) error {
 	if errCode != http.StatusOK {
 		return c.JSON(errCode, rest.SetMessage(err.Error()))
 	}
+	//_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/topic", types.HOST, nsId, mcisId, vmId), nsId+"/"+mcisId+"/"+vmId+"/"+cspType)
+	//_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/publicip", types.HOST, nsId, mcisId, vmId), publicIp)
+	//_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/healthstate", types.HOST, nsId, mcisId, vmId), "true")
+	//_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s:%s/%s/%s/%s", types.TOPIC, nsId, mcisId, vmId, cspType), nsId+"/"+mcisId+"/"+vmId+"/"+cspType)
 	return c.JSON(http.StatusOK, rest.SetMessage("agent installation is finished"))
 }
 
+
+//func EndrollForTest(c echo.Context) error {
+//	nsId := c.FormValue("ns_id")
+//	mcisId := c.FormValue("mcis_id")
+//	vmId := c.FormValue("vm_id")
+//	cspType := c.FormValue("cspType")
+//
+//	_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/topic", types.HOST, nsId, mcisId, vmId), nsId+"/"+mcisId+"/"+vmId+"/"+cspType)
+//	_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/publicip", types.HOST, nsId, mcisId, vmId), "192.168.130.7")
+//	_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s/nsid:%s&mcisid:%s&vmid:%s/healthstate", types.HOST, nsId, mcisId, vmId), "true")
+//	_ = localstore.GetInstance().StorePut(fmt.Sprintf("%s:%s/%s/%s/%s", types.TOPIC, nsId, mcisId, vmId, cspType), nsId+"/"+mcisId+"/"+vmId+"/"+cspType)
+//}
+
+// TODO: WINDOW Version
 func GetWindowInstaller(c echo.Context) error {
 	rootPath := os.Getenv("CBMON_ROOT")
 	filePath := rootPath + "/file/pkg/windows/installer/cbinstaller_windows_amd64.zip"
@@ -54,7 +72,6 @@ func GetTelegrafConfFile(c echo.Context) error {
 	if nsId == "" || mcisId == "" || vmId == "" || cspType == "" {
 		return c.JSON(http.StatusInternalServerError, rest.SetMessage("query parameter is missing"))
 	}
-	//collectorServer := fmt.Sprintf("udp://%s:%d", apiServer.config.CollectManager.CollectorIP, apiServer.config.CollectManager.CollectorPort)
 
 	rootPath := os.Getenv("CBMON_ROOT")
 	filePath := rootPath + "/file/conf/telegraf.conf"

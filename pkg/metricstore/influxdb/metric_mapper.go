@@ -1,7 +1,8 @@
-package metricstore
+package influxdb
 
 import (
 	"errors"
+
 	"github.com/influxdata/influxdb1-client/models"
 )
 

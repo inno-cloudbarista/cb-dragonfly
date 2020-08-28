@@ -10,7 +10,6 @@ import (
 
 type Config struct {
 	InfluxDB       InfluxDB
-	Etcd           Etcd
 	CollectManager CollectManager
 	APIServer      APIServer
 	Monitoring     Monitoring
@@ -26,15 +25,11 @@ type InfluxDB struct {
 	Password     string
 }
 
-type Etcd struct {
-	EndpointUrl string `json:"endpoint_url" mapstructure:"endpoint_url"`
-	ttl         int
-}
-
 type CollectManager struct {
-	CollectorIP   string `json:"collector_ip" mapstructure:"collector_ip"`
+	CollectorIP             string `json:"collector_ip" mapstructure:"collector_ip"`
 	CollectorPort int    `json:"collector_port" mapstructure:"collector_port"`
-	CollectorCnt  int    `json:"collector_count" mapstructure:"collector_count"`
+	CollectorGroupCnt       int    `json:"collectorGroup_count" mapstructure:"collectorGroup_count"`
+	//GroupPerCollectCnt int    `json:"group_per_collect_count" mapstructure:"group_per_collect_count"`
 }
 
 type APIServer struct {
@@ -43,10 +38,9 @@ type APIServer struct {
 
 type Monitoring struct {
 	AgentInterval      int `json:"agent_interval" mapstructure:"agent_interval"`         // 모니터링 에이전트 수집주기
-	AgentTTL           int `json:"agent_TTL" mapstructure:"agent_TTL"`                   // 모니터링 에이전트 데이터 TTL
 	CollectorInterval  int `json:"collector_interval" mapstructure:"collector_interval"` // 모니터링 콜렉터 Aggregate 주기
-	SchedulingInterval int `json:"schedule_interval" mapstructure:"schedule_interval"`   // 모니터링 콜렉터 스케줄링 주기 (스케일 인/아웃 로직 체크 주기)
 	MaxHostCount       int `json:"max_host_count" mapstructure:"max_host_count"`         // 모니터링 콜렉터 수
+	MonitoringPolicy       int `json:"monitoring_policy" mapstructure:"monitoring_policy"`         // 모니터링 콜렉터 수
 }
 
 type Kapacitor struct {
@@ -79,10 +73,6 @@ func (config *Config) SetMonConfig(newMonConfig Monitoring) {
 
 func (config *Config) GetInfluxDBConfig() InfluxDB {
 	return config.InfluxDB
-}
-
-func (config *Config) GetETCDConfig() Etcd {
-	return config.Etcd
 }
 
 func (config *Config) GetKapacitorConfig() Kapacitor {

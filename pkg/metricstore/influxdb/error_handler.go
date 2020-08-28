@@ -1,13 +1,14 @@
-package metricstore
+package influxdb
 
 import (
-	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdbv1"
-	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdbv2"
 	"github.com/pkg/errors"
+
+	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdb/influxdbv1"
+	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdb/influxdbv2"
 )
 
 func invalidConfigError(storeType StoreType) error {
-	msg := "invalid storage config"
+	msg := "invalid metricstore config"
 	switch storeType {
 	case InfluxDBV1Type:
 		return errors.Errorf("%s: %v", msg, influxdbv1.Config{})
@@ -19,5 +20,5 @@ func invalidConfigError(storeType StoreType) error {
 }
 
 func notSupportedTypeError(storeType StoreType) error {
-	return errors.Errorf("storage type '%s' not supported", storeType)
+	return errors.Errorf("metricstore type '%s' not supported", storeType)
 }

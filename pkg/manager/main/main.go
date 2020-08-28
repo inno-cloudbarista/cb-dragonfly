@@ -41,30 +41,18 @@ func main() {
 	}
 
 	// 실시간 모니터링 데이터 초기화
-	err = cm.FlushMonitoringData()
+	cm.FlushMonitoringData()
+	err = cm.StartCollectorGroup(&wg)
 	if err != nil {
 		panic(err)
 	}
-
-	// 모니터링 콜렉터 실행
-	err = cm.StartCollector(&wg)
-	if err != nil {
-		panic(err)
-	}
-
-	// UDP load balancer start
-	err = cm.CreateLoadBalancer(&wg)
-	if err != nil {
-		panic(err)
-	}
-
-	// 모니터링 Aggregate 스케줄러 실행
-	wg.Add(1)
-	go cm.StartAggregateScheduler(&wg, &cm.AggregatingChan)
 
 	// 모니터링 콜렉터 스케일 인/아웃 스케줄러 실행
 	wg.Add(1)
-	go cm.StartScaleScheduler(&wg)
+	err = cm.StartScheduler(&wg)
+	if err != nil {
+		panic(err)
+	}
 
 	// 모니터링 API 서버 실행
 	wg.Add(1)

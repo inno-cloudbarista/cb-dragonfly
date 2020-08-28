@@ -1,5 +1,4 @@
-package localstore
-
+package collector
 
 import (
 	"sync"
@@ -11,7 +10,7 @@ import (
 )
 
 type CBStore struct {
-	Store icbs.Store
+	Store  icbs.Store
 }
 
 var once sync.Once
@@ -28,8 +27,8 @@ func GetInstance() *CBStore {
 	return &cbstore
 }
 
-func (cs *CBStore) StorePut(key string, value string) error {
-	return cs.Store.Put(key, value)
+func (cs *CBStore) StorePut(key string, value string) {
+	_ = cs.Store.Put(key, value)
 }
 
 func (cs *CBStore) StoreGet(key string) string {
@@ -40,10 +39,9 @@ func (cs *CBStore) StoreGet(key string) string {
 	return keyVal.Value
 }
 
-func (cs *CBStore) StoreDelete(key string) error {
-	return cs.Store.Delete(key)
+func (cs *CBStore) StoreDelete(key string) {
+	_ = cs.Store.Delete(key)
 }
-
 
 func (cs *CBStore) StoreGetList(key string, sortAscend bool) [] string {
 	keyVal, err := cs.Store.GetList(key, sortAscend)
@@ -76,4 +74,3 @@ func (cs *CBStore) StoreDelList(key string) error {
 func (cs *CBStore) StoreGetNodeValue(key string, depth int) string {
 	return utils.GetNodeValue(key, depth)
 }
-

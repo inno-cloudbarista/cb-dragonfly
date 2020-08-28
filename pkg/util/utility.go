@@ -3,9 +3,12 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/url"
 	"reflect"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 func StructToMap(i interface{}) (values url.Values) {
@@ -62,4 +65,76 @@ func GetFields(val reflect.Value) []string {
 		fieldArr = append(fieldArr, t.Field(i).Tag.Get("json"))
 	}
 	return fieldArr
+}
+
+
+func SplitOneStringToTopicsSlice(topicsStrings string) []string {
+	return strings.Split(topicsStrings, "&")[1:]
+}
+
+func MergeTopicsToOneString(topicsSlice []string) string {
+	var combinedTopicString string
+	for _, topic := range topicsSlice {
+		combinedTopicString = fmt.Sprintf("%s&%s", combinedTopicString, topic)
+	}
+	return combinedTopicString
+}
+
+func CalculateNumberOfCollector(topicCount int, maxHostCount int) int {
+	collectorCount := topicCount/maxHostCount
+	if topicCount%maxHostCount != 0 || topicCount == 0 {
+		collectorCount += 1
+	}
+	return collectorCount
+}
+
+func ReturnDiffTopicList(a, b []string) (diff []string) {
+	m := make(map[string]bool)
+	for _, item := range b {
+		m[item] = true
+	}
+	for _, item := range a {
+		if _, ok := m[item]; !ok {
+			diff = append(diff, item)
+		}
+	}
+	return
+}
+
+func GetAllTopicBySort(topicsSlice []string) []string {
+	sort.Slice(topicsSlice, func(i, j int) bool {
+		return topicsSlice[i] < topicsSlice[j]
+	})
+	return topicsSlice[1:]
+}
+
+func MakeCollectorTopicMap(allTopics []string, maxHostCount int) (map[int] []string, []int) {
+
+	if len(allTopics) == 0 {
+		return map[int] []string{}, []int {}
+	}
+
+	collectorTopicMap := map[int] []string{}
+	collectorTopicCnt := [] int{}
+	allTopicsLen := len(allTopics)
+	startIdx := 0
+	endIdx := 0
+
+	collectorCount := CalculateNumberOfCollector(allTopicsLen, maxHostCount)
+
+	for collectorCountIdx := 0; collectorCountIdx < collectorCount; collectorCountIdx++ {
+		if allTopicsLen < maxHostCount {
+			endIdx = len(allTopics)
+		} else {
+			endIdx = (collectorCountIdx+1)*maxHostCount
+		}
+		aTopics :=  allTopics[startIdx:endIdx]
+		collectorTopicMap[collectorCountIdx] = aTopics
+
+		collectorTopicCnt = append(collectorTopicCnt, len(aTopics))
+
+		startIdx = endIdx
+		allTopicsLen -=  maxHostCount
+	}
+	return collectorTopicMap, collectorTopicCnt
 }

@@ -1,4 +1,4 @@
-package metricstore
+package influxdb
 
 import (
 	"github.com/cloud-barista/cb-dragonfly/pkg/util"

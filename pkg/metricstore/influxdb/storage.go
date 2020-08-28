@@ -1,7 +1,7 @@
-package metricstore
+package influxdb
 
 import (
-	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdbv2"
+	"github.com/cloud-barista/cb-dragonfly/pkg/metricstore/influxdb/influxdbv2"
 )
 
 type StoreType string
