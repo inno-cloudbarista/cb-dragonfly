@@ -18,7 +18,7 @@ type Config interface {
 // Storage is common interface of Realtime Monitoring Metric Storage
 type Storage interface {
 	Init() error
-	WriteMetric(key string, metric interface{}) error
+	WriteMetric(key string, metric interface{}, useTTL bool) error
 	ReadMetric(key string) (*client.Node, error)
 	DeleteMetric(key string) error
 }

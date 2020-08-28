@@ -40,7 +40,6 @@ type APIServer struct {
 
 type Monitoring struct {
 	AgentInterval      int `json:"agent_interval" mapstructure:"agent_interval"`         // 모니터링 에이전트 수집주기
-	AgentTTL           int `json:"agent_TTL" mapstructure:"agent_TTL"`                   // 모니터링 에이전트 데이터 TTL
 	CollectorInterval  int `json:"collector_interval" mapstructure:"collector_interval"` // 모니터링 콜렉터 Aggregate 주기
 	SchedulingInterval int `json:"schedule_interval" mapstructure:"schedule_interval"`   // 모니터링 콜렉터 스케줄링 주기 (스케일 인/아웃 로직 체크 주기)
 	MaxHostCount       int `json:"max_host_count" mapstructure:"max_host_count"`         // 모니터링 콜렉터 수

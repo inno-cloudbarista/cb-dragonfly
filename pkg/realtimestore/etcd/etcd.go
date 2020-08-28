@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/cloud-barista/cb-dragonfly/pkg/config"
+	"sync"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"go.etcd.io/etcd/client"
-	"sync"
+
+	"github.com/cloud-barista/cb-dragonfly/pkg/config"
 )
 
 type ClientOptions struct {
@@ -54,8 +57,7 @@ func (s *Storage) Init() error {
 	return nil
 }
 
-//func (s *Storage) WriteMetric(key string, metric map[string]interface{}) error {
-func (s *Storage) WriteMetric(key string, metric interface{}) error {
+func (s *Storage) WriteMetric(key string, metric interface{}, useTTL bool) error {
 
 	kapi := client.NewKeysAPI(s.Client)
 	var metricVal string
@@ -77,9 +79,13 @@ func (s *Storage) WriteMetric(key string, metric interface{}) error {
 		metricVal = metric.(string)
 	}
 
-	// 실시간 모니터링 데이터 저장
-	// TODO: 추후 모니터링 데이터 TTL(Time To Live) 설정 추가
-	opts := client.SetOptions{TTL: -1}
+	var opts client.SetOptions
+	if useTTL {
+		opts = client.SetOptions{TTL: time.Duration(config.GetInstance().Monitoring.AgentInterval+1) * time.Second}
+	} else {
+		opts = client.SetOptions{TTL: -1}
+
+	}
 
 	s.L.RLock()
 	_, err := kapi.Set(context.Background(), key, fmt.Sprintf("%s", metricVal), &opts)
@@ -122,4 +128,45 @@ func (s *Storage) DeleteMetric(key string) error {
 	}
 
 	return nil
+}
+
+func (s *Storage) WatchETCDSet(key string, ch *chan string) {
+	kapi := client.NewKeysAPI(s.Client)
+	watcher := kapi.Watcher(key, &client.WatcherOptions{Recursive: true})
+
+	for true {
+		resp, err := watcher.Next(context.TODO())
+		if err != nil {
+			if _, ok := err.(*client.ClusterError); ok {
+				continue
+			}
+			logrus.Error(err)
+		}
+		switch resp.Action {
+		case "set":
+			topics := resp.Node.Value
+			*ch <- topics
+		}
+	}
+}
+
+
+func (s *Storage) WatchETCDExpire(key string, ch *chan string) {
+	kapi := client.NewKeysAPI(s.Client)
+	watcher := kapi.Watcher(key, &client.WatcherOptions{Recursive: true})
+
+	for true {
+		resp, err := watcher.Next(context.TODO())
+		if err != nil {
+			if _, ok := err.(*client.ClusterError); ok {
+				continue
+			}
+			logrus.Error(err)
+		}
+		switch resp.Action {
+		case "expire":
+			topic := resp.Node.Value
+			*ch <- topic
+		}
+	}
 }

@@ -25,7 +25,7 @@ func SetMonConfig(newMonConfig config.Monitoring) (*config.Monitoring, int, erro
 	}
 
 	// 모니터링 정책 etcd 저장
-	err = etcd.GetInstance().WriteMetric(MonConfigKey, monConfigMap)
+	err = etcd.GetInstance().WriteMetric(MonConfigKey, monConfigMap, false)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
@@ -60,7 +60,7 @@ func ResetMonConfig() (*config.Monitoring, int, error) {
 	}
 
 	// 모니터링 정책 etcd 저장
-	err = etcd.GetInstance().WriteMetric(MonConfigKey, monConfigMap)
+	err = etcd.GetInstance().WriteMetric(MonConfigKey, monConfigMap, false)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
