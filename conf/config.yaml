@@ -12,7 +12,7 @@ etcd:
   endpoint_url: http://cb-dragonfly-etcd:2379 # endpoint to etcd storage
 
 # collect manager configuration info
-collect_manager:
+collectManager:
   collector_ip: 192.168.130.7 # local access endpoint to cb-dragonfly API server
   collector_port: 8094    # udp port
   collector_count: 1      # default collector count

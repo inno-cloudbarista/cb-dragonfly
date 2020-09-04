@@ -91,12 +91,25 @@ func (mc *MetricCollector) Collector(wg *sync.WaitGroup) error {
 				}
 				logrus.Debug("======================================================================")
 			default:
+				fmt.Println("===processDecision ===")
+				fmt.Println(processDecision)
 				if string(processDecision[0]) == "&" {
 					topics := strings.Split(processDecision, "&")[1:]
+					fmt.Println(topics)
 					mc.KafkaConn.SubscribeTopics(topics, nil)
+					for _, topic := range topics {
+						topicInfo := fmt.Sprintf("/collector/%d/topics/%s", mc.CreateOrder,  topic)
+						err := etcd.GetInstance().WriteMetric(topicInfo, topic, true)
+						if err != nil {
+							logrus.Error("fail to write topicInfo to ETCD", err)
+							return nil
+						}
+					}
 				} else {
 					topic := processDecision
-					kafkabroker.GetInstance().DeleteTopics(topic)
+					fmt.Println("=== im deleted Topic ===")
+					fmt.Println(topic)
+					_ = kafkabroker.GetInstance().DeleteTopics(topic)
 				}
 			}
 		default:

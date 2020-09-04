@@ -80,7 +80,7 @@ func GetAllTopicBySort(topicsSlice []string) []string {
 	sort.Slice(topicsSlice, func(i, j int) bool {
 		return topicsSlice[i] < topicsSlice[j]
 	})
-	return topicsSlice
+	return topicsSlice[1:]
 }
 
 func NewCollectorScheduler(manager *CollectManager) (*CollectorScheduler, error) {

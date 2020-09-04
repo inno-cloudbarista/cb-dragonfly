@@ -165,7 +165,7 @@ func (s *Storage) WatchETCDExpire(key string, ch *chan string) {
 		}
 		switch resp.Action {
 		case "expire":
-			topic := resp.Node.Value
+			topic := resp.PrevNode.Value
 			*ch <- topic
 		}
 	}

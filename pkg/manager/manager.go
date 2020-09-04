@@ -76,8 +76,6 @@ func (manager *CollectManager) StartScheduler(wg *sync.WaitGroup) error {
 
 func (manager *CollectManager) StartCollector(wg *sync.WaitGroup) error {
 	manager.WaitGroup = wg
-	test := config.GetInstance()
-	fmt.Println(test)
 	for i := 0; i < config.GetInstance().CollectManager.CollectorCnt; i++ {
 		err := manager.CreateCollector()
 		if err != nil {
@@ -104,7 +102,7 @@ func (manager *CollectManager) CreateCollector() error {
 	manager.WaitGroup.Add(1)
 	go func() {
 		collectorUUID := fmt.Sprintf("/collector/%d/uuid/%s", mc.CreateOrder, mc.UUID)
-		err := etcd.GetInstance().WriteMetric(collectorUUID,  mc.UUID, true)
+		err := etcd.GetInstance().WriteMetric(collectorUUID,  mc.UUID, false)
 		if err != nil {
 			logrus.Error("fail to write collectorUUID to ETCD", err)
 		}
