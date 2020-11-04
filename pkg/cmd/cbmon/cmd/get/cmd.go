@@ -12,6 +12,7 @@ func NewCmd() *cobra.Command {
 	}
 	cmd.AddCommand(newGetConfigCmd())
 	cmd.AddCommand(newGetMetricCmd())
+	cmd.AddCommand(newGetOnDemandMetricCmd())
 	//cmd.AddCommand(newAddControllerCmd())
 	return cmd
 }

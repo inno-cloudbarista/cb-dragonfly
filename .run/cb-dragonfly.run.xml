@@ -1,4 +1,44 @@
 <component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="cb-dragonfly" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="commandLineOptions" value="--build" />
+        <option name="services">
+          <list>
+            <option value="cb-dragonfly" />
+            <option value="cb-dragonfly-chronograf" />
+            <option value="cb-dragonfly-influxdb" />
+            <option value="cb-dragonfly-kafka" />
+            <option value="cb-dragonfly-kapacitor" />
+            <option value="cb-dragonfly-zk-web" />
+            <option value="cb-dragonfly-zookeeper" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yaml" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+  <configuration default="false" name="cb-dragonfly" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="commandLineOptions" value="--build" />
+        <option name="services">
+          <list>
+            <option value="cb-dragonfly" />
+            <option value="cb-dragonfly-chronograf" />
+            <option value="cb-dragonfly-influxdb" />
+            <option value="cb-dragonfly-kafka" />
+            <option value="cb-dragonfly-kapacitor" />
+            <option value="cb-dragonfly-zk-web" />
+            <option value="cb-dragonfly-zookeeper" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yaml" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
   <configuration default="false" name="cb-dragonfly" type="GoRemoteDebugConfigurationType" factoryName="Go Remote" port="9090">
     <method v="2" />
   </configuration>

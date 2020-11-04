@@ -8,6 +8,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	grpc "github.com/cloud-barista/cb-dragonfly/pkg/api/grpc/server"
 	"github.com/cloud-barista/cb-dragonfly/pkg/core/alert/template"
 	"github.com/cloud-barista/cb-dragonfly/pkg/manager"
 )
@@ -74,6 +75,10 @@ func main() {
 		panic(err)
 	}
 	go apiServer.StartAPIServer(&wg)
+
+	// 모니터링 gRPC 서버 실행
+	wg.Add(1)
+	go grpc.StartGRPCServer()
 
 	// 모든 고루틴이 종료될 때까지 대기
 	wg.Wait()

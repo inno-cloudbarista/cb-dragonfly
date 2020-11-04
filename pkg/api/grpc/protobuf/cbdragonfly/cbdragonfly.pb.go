@@ -117,7 +117,10 @@ func (m *MessageResponse) GetMessage() string {
 }
 
 type Tags struct {
-	HostId               string   `protobuf:"bytes,1,opt,name=host_id,json=hostId,proto3" json:"hostId" yaml:"hostId"`
+	//	string host_id = 1 [json_name="hostId", (gogoproto.jsontag) = "hostId", (gogoproto.moretags) = "yaml:\"hostId\""];
+	NsId                 string   `protobuf:"bytes,1,opt,name=ns_id,json=nsId,proto3" json:"nsId" yaml:"nsId"`
+	McisId               string   `protobuf:"bytes,2,opt,name=mcis_id,json=mcisId,proto3" json:"mcisId" yaml:"mcisId"`
+	VmId                 string   `protobuf:"bytes,3,opt,name=vm_id,json=vmId,proto3" json:"vmId" yaml:"vmId"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -156,9 +159,23 @@ func (m *Tags) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Tags proto.InternalMessageInfo
 
-func (m *Tags) GetHostId() string {
+func (m *Tags) GetNsId() string {
 	if m != nil {
-		return m.HostId
+		return m.NsId
+	}
+	return ""
+}
+
+func (m *Tags) GetMcisId() string {
+	if m != nil {
+		return m.McisId
+	}
+	return ""
+}
+
+func (m *Tags) GetVmId() string {
+	if m != nil {
+		return m.VmId
 	}
 	return ""
 }
@@ -250,6 +267,77 @@ func (m *VMMonQryRequest) GetDuration() string {
 	return ""
 }
 
+type VMOndemandMonQryRequest struct {
+	NsId                 string   `protobuf:"bytes,1,opt,name=ns_id,proto3" json:"ns_id" yaml:"ns_id"`
+	McisId               string   `protobuf:"bytes,2,opt,name=mcis_id,proto3" json:"mcis_id" yaml:"mcis_id"`
+	VmId                 string   `protobuf:"bytes,3,opt,name=vm_id,proto3" json:"vm_id" yaml:"vm_id"`
+	AgentIp              string   `protobuf:"bytes,4,opt,name=agent_ip,proto3" json:"agent_ip" yaml:"agent_ip"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VMOndemandMonQryRequest) Reset()         { *m = VMOndemandMonQryRequest{} }
+func (m *VMOndemandMonQryRequest) String() string { return proto.CompactTextString(m) }
+func (*VMOndemandMonQryRequest) ProtoMessage()    {}
+func (*VMOndemandMonQryRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3ada617ac924eafc, []int{4}
+}
+func (m *VMOndemandMonQryRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VMOndemandMonQryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VMOndemandMonQryRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VMOndemandMonQryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VMOndemandMonQryRequest.Merge(m, src)
+}
+func (m *VMOndemandMonQryRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *VMOndemandMonQryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VMOndemandMonQryRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VMOndemandMonQryRequest proto.InternalMessageInfo
+
+func (m *VMOndemandMonQryRequest) GetNsId() string {
+	if m != nil {
+		return m.NsId
+	}
+	return ""
+}
+
+func (m *VMOndemandMonQryRequest) GetMcisId() string {
+	if m != nil {
+		return m.McisId
+	}
+	return ""
+}
+
+func (m *VMOndemandMonQryRequest) GetVmId() string {
+	if m != nil {
+		return m.VmId
+	}
+	return ""
+}
+
+func (m *VMOndemandMonQryRequest) GetAgentIp() string {
+	if m != nil {
+		return m.AgentIp
+	}
+	return ""
+}
+
 type VMLatestMonQryRequest struct {
 	NsId                 string   `protobuf:"bytes,1,opt,name=ns_id,proto3" json:"ns_id" yaml:"ns_id"`
 	McisId               string   `protobuf:"bytes,2,opt,name=mcis_id,proto3" json:"mcis_id" yaml:"mcis_id"`
@@ -264,7 +352,7 @@ func (m *VMLatestMonQryRequest) Reset()         { *m = VMLatestMonQryRequest{} }
 func (m *VMLatestMonQryRequest) String() string { return proto.CompactTextString(m) }
 func (*VMLatestMonQryRequest) ProtoMessage()    {}
 func (*VMLatestMonQryRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{4}
+	return fileDescriptor_3ada617ac924eafc, []int{5}
 }
 func (m *VMLatestMonQryRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -321,6 +409,288 @@ func (m *VMLatestMonQryRequest) GetStatisticsCriteria() string {
 	return ""
 }
 
+//////////////////////////////////
+// VM 온디멘드 모니터링 메시지 정의 (CPU 메트릭)
+//////////////////////////////////
+type CpuOndemandInfoResponse struct {
+	Name                 string             `protobuf:"bytes,1,opt,name=name,proto3" json:"name" yaml:"name"`
+	Tags                 *Tags              `protobuf:"bytes,2,opt,name=tags,proto3" json:"tags" yaml:"tags"`
+	Time                 string             `protobuf:"bytes,3,opt,name=time,proto3" json:"time" yaml:"time"`
+	Values               []*CpuOndemandInfo `protobuf:"bytes,4,rep,name=values,proto3" json:"values" yaml:"values"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *CpuOndemandInfoResponse) Reset()         { *m = CpuOndemandInfoResponse{} }
+func (m *CpuOndemandInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*CpuOndemandInfoResponse) ProtoMessage()    {}
+func (*CpuOndemandInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3ada617ac924eafc, []int{6}
+}
+func (m *CpuOndemandInfoResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CpuOndemandInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CpuOndemandInfoResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CpuOndemandInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CpuOndemandInfoResponse.Merge(m, src)
+}
+func (m *CpuOndemandInfoResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CpuOndemandInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CpuOndemandInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CpuOndemandInfoResponse proto.InternalMessageInfo
+
+func (m *CpuOndemandInfoResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CpuOndemandInfoResponse) GetTags() *Tags {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+func (m *CpuOndemandInfoResponse) GetTime() string {
+	if m != nil {
+		return m.Time
+	}
+	return ""
+}
+
+func (m *CpuOndemandInfoResponse) GetValues() []*CpuOndemandInfo {
+	if m != nil {
+		return m.Values
+	}
+	return nil
+}
+
+type CpuOndemandInfo struct {
+	CpuUtilization       float64  `protobuf:"fixed64,1,opt,name=cpu_utilization,proto3" json:"cpu_utilization" yaml:"cpu_utilization"`
+	CpuSystem            float64  `protobuf:"fixed64,2,opt,name=cpu_system,proto3" json:"cpu_system" yaml:"cpu_system"`
+	CpuIdle              float64  `protobuf:"fixed64,3,opt,name=cpu_idle,proto3" json:"cpu_idle" yaml:"cpu_idle"`
+	CpuIowait            float64  `protobuf:"fixed64,4,opt,name=cpu_iowait,proto3" json:"cpu_iowait" yaml:"cpu_iowait"`
+	CpuHintr             float64  `protobuf:"fixed64,5,opt,name=cpu_hintr,proto3" json:"cpu_hintr" yaml:"cpu_hintr"`
+	CpuSintr             float64  `protobuf:"fixed64,6,opt,name=cpu_sintr,proto3" json:"cpu_sintr" yaml:"cpu_sintr"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CpuOndemandInfo) Reset()         { *m = CpuOndemandInfo{} }
+func (m *CpuOndemandInfo) String() string { return proto.CompactTextString(m) }
+func (*CpuOndemandInfo) ProtoMessage()    {}
+func (*CpuOndemandInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3ada617ac924eafc, []int{7}
+}
+func (m *CpuOndemandInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CpuOndemandInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CpuOndemandInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CpuOndemandInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CpuOndemandInfo.Merge(m, src)
+}
+func (m *CpuOndemandInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *CpuOndemandInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_CpuOndemandInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CpuOndemandInfo proto.InternalMessageInfo
+
+func (m *CpuOndemandInfo) GetCpuUtilization() float64 {
+	if m != nil {
+		return m.CpuUtilization
+	}
+	return 0
+}
+
+func (m *CpuOndemandInfo) GetCpuSystem() float64 {
+	if m != nil {
+		return m.CpuSystem
+	}
+	return 0
+}
+
+func (m *CpuOndemandInfo) GetCpuIdle() float64 {
+	if m != nil {
+		return m.CpuIdle
+	}
+	return 0
+}
+
+func (m *CpuOndemandInfo) GetCpuIowait() float64 {
+	if m != nil {
+		return m.CpuIowait
+	}
+	return 0
+}
+
+func (m *CpuOndemandInfo) GetCpuHintr() float64 {
+	if m != nil {
+		return m.CpuHintr
+	}
+	return 0
+}
+
+func (m *CpuOndemandInfo) GetCpuSintr() float64 {
+	if m != nil {
+		return m.CpuSintr
+	}
+	return 0
+}
+
+//////////////////////////////////
+// VM 온디멘드 모니터링 메시지 정의 (CPUFREQ 메트릭)
+//////////////////////////////////
+type CpuFreqOndemandInfoResponse struct {
+	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name" yaml:"name"`
+	Tags                 *Tags      `protobuf:"bytes,2,opt,name=tags,proto3" json:"tags" yaml:"tags"`
+	Time                 string     `protobuf:"bytes,3,opt,name=time,proto3" json:"time" yaml:"time"`
+	Values               []*CpuInfo `protobuf:"bytes,4,rep,name=values,proto3" json:"values" yaml:"values"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *CpuFreqOndemandInfoResponse) Reset()         { *m = CpuFreqOndemandInfoResponse{} }
+func (m *CpuFreqOndemandInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*CpuFreqOndemandInfoResponse) ProtoMessage()    {}
+func (*CpuFreqOndemandInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3ada617ac924eafc, []int{8}
+}
+func (m *CpuFreqOndemandInfoResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CpuFreqOndemandInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CpuFreqOndemandInfoResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CpuFreqOndemandInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CpuFreqOndemandInfoResponse.Merge(m, src)
+}
+func (m *CpuFreqOndemandInfoResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CpuFreqOndemandInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CpuFreqOndemandInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CpuFreqOndemandInfoResponse proto.InternalMessageInfo
+
+func (m *CpuFreqOndemandInfoResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CpuFreqOndemandInfoResponse) GetTags() *Tags {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+func (m *CpuFreqOndemandInfoResponse) GetTime() string {
+	if m != nil {
+		return m.Time
+	}
+	return ""
+}
+
+func (m *CpuFreqOndemandInfoResponse) GetValues() []*CpuInfo {
+	if m != nil {
+		return m.Values
+	}
+	return nil
+}
+
+type CpuFreqOndemandInfo struct {
+	CpuSpeed             float64  `protobuf:"fixed64,1,opt,name=cpu_speed,proto3" json:"cpu_speed" yaml:"cpu_speed"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CpuFreqOndemandInfo) Reset()         { *m = CpuFreqOndemandInfo{} }
+func (m *CpuFreqOndemandInfo) String() string { return proto.CompactTextString(m) }
+func (*CpuFreqOndemandInfo) ProtoMessage()    {}
+func (*CpuFreqOndemandInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3ada617ac924eafc, []int{9}
+}
+func (m *CpuFreqOndemandInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CpuFreqOndemandInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CpuFreqOndemandInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CpuFreqOndemandInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CpuFreqOndemandInfo.Merge(m, src)
+}
+func (m *CpuFreqOndemandInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *CpuFreqOndemandInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_CpuFreqOndemandInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CpuFreqOndemandInfo proto.InternalMessageInfo
+
+func (m *CpuFreqOndemandInfo) GetCpuSpeed() float64 {
+	if m != nil {
+		return m.CpuSpeed
+	}
+	return 0
+}
+
 type CpuInfoResponse struct {
 	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name" yaml:"name"`
 	Tags                 *Tags      `protobuf:"bytes,2,opt,name=tags,proto3" json:"tags" yaml:"tags"`
@@ -334,7 +704,7 @@ func (m *CpuInfoResponse) Reset()         { *m = CpuInfoResponse{} }
 func (m *CpuInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*CpuInfoResponse) ProtoMessage()    {}
 func (*CpuInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{5}
+	return fileDescriptor_3ada617ac924eafc, []int{10}
 }
 func (m *CpuInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -406,7 +776,7 @@ func (m *CpuInfo) Reset()         { *m = CpuInfo{} }
 func (m *CpuInfo) String() string { return proto.CompactTextString(m) }
 func (*CpuInfo) ProtoMessage()    {}
 func (*CpuInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{6}
+	return fileDescriptor_3ada617ac924eafc, []int{11}
 }
 func (m *CpuInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -532,7 +902,7 @@ func (m *CpuFreqInfoResponse) Reset()         { *m = CpuFreqInfoResponse{} }
 func (m *CpuFreqInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*CpuFreqInfoResponse) ProtoMessage()    {}
 func (*CpuFreqInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{7}
+	return fileDescriptor_3ada617ac924eafc, []int{12}
 }
 func (m *CpuFreqInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -594,7 +964,7 @@ func (m *CpuFreqInfo) Reset()         { *m = CpuFreqInfo{} }
 func (m *CpuFreqInfo) String() string { return proto.CompactTextString(m) }
 func (*CpuFreqInfo) ProtoMessage()    {}
 func (*CpuFreqInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{8}
+	return fileDescriptor_3ada617ac924eafc, []int{13}
 }
 func (m *CpuFreqInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -650,7 +1020,7 @@ func (m *MemoryInfoResponse) Reset()         { *m = MemoryInfoResponse{} }
 func (m *MemoryInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*MemoryInfoResponse) ProtoMessage()    {}
 func (*MemoryInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{9}
+	return fileDescriptor_3ada617ac924eafc, []int{14}
 }
 func (m *MemoryInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -718,7 +1088,7 @@ func (m *MemoryInfo) Reset()         { *m = MemoryInfo{} }
 func (m *MemoryInfo) String() string { return proto.CompactTextString(m) }
 func (*MemoryInfo) ProtoMessage()    {}
 func (*MemoryInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{10}
+	return fileDescriptor_3ada617ac924eafc, []int{15}
 }
 func (m *MemoryInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -816,7 +1186,7 @@ func (m *DiskInfoResponse) Reset()         { *m = DiskInfoResponse{} }
 func (m *DiskInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*DiskInfoResponse) ProtoMessage()    {}
 func (*DiskInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{11}
+	return fileDescriptor_3ada617ac924eafc, []int{16}
 }
 func (m *DiskInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -887,7 +1257,7 @@ func (m *DiskInfo) Reset()         { *m = DiskInfo{} }
 func (m *DiskInfo) String() string { return proto.CompactTextString(m) }
 func (*DiskInfo) ProtoMessage()    {}
 func (*DiskInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{12}
+	return fileDescriptor_3ada617ac924eafc, []int{17}
 }
 func (m *DiskInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1006,7 +1376,7 @@ func (m *NetworkInfoResponse) Reset()         { *m = NetworkInfoResponse{} }
 func (m *NetworkInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*NetworkInfoResponse) ProtoMessage()    {}
 func (*NetworkInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{13}
+	return fileDescriptor_3ada617ac924eafc, []int{18}
 }
 func (m *NetworkInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1071,7 +1441,7 @@ func (m *NetworkInfo) Reset()         { *m = NetworkInfo{} }
 func (m *NetworkInfo) String() string { return proto.CompactTextString(m) }
 func (*NetworkInfo) ProtoMessage()    {}
 func (*NetworkInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{14}
+	return fileDescriptor_3ada617ac924eafc, []int{19}
 }
 func (m *NetworkInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1149,7 +1519,7 @@ func (m *CpuRtInfoResponse) Reset()         { *m = CpuRtInfoResponse{} }
 func (m *CpuRtInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*CpuRtInfoResponse) ProtoMessage()    {}
 func (*CpuRtInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{15}
+	return fileDescriptor_3ada617ac924eafc, []int{20}
 }
 func (m *CpuRtInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1222,7 +1592,7 @@ func (m *CpuRtInfo) Reset()         { *m = CpuRtInfo{} }
 func (m *CpuRtInfo) String() string { return proto.CompactTextString(m) }
 func (*CpuRtInfo) ProtoMessage()    {}
 func (*CpuRtInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{16}
+	return fileDescriptor_3ada617ac924eafc, []int{21}
 }
 func (m *CpuRtInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1307,7 +1677,7 @@ func (m *CpuFreqRtInfoResponse) Reset()         { *m = CpuFreqRtInfoResponse{} }
 func (m *CpuFreqRtInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*CpuFreqRtInfoResponse) ProtoMessage()    {}
 func (*CpuFreqRtInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{17}
+	return fileDescriptor_3ada617ac924eafc, []int{22}
 }
 func (m *CpuFreqRtInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1375,7 +1745,7 @@ func (m *CpuFreqRtInfo) Reset()         { *m = CpuFreqRtInfo{} }
 func (m *CpuFreqRtInfo) String() string { return proto.CompactTextString(m) }
 func (*CpuFreqRtInfo) ProtoMessage()    {}
 func (*CpuFreqRtInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{18}
+	return fileDescriptor_3ada617ac924eafc, []int{23}
 }
 func (m *CpuFreqRtInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1425,7 +1795,7 @@ func (m *MemoryRtInfoResponse) Reset()         { *m = MemoryRtInfoResponse{} }
 func (m *MemoryRtInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*MemoryRtInfoResponse) ProtoMessage()    {}
 func (*MemoryRtInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{19}
+	return fileDescriptor_3ada617ac924eafc, []int{24}
 }
 func (m *MemoryRtInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1499,7 +1869,7 @@ func (m *MemoryRtInfo) Reset()         { *m = MemoryRtInfo{} }
 func (m *MemoryRtInfo) String() string { return proto.CompactTextString(m) }
 func (*MemoryRtInfo) ProtoMessage()    {}
 func (*MemoryRtInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{20}
+	return fileDescriptor_3ada617ac924eafc, []int{25}
 }
 func (m *MemoryRtInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1591,7 +1961,7 @@ func (m *DiskRtInfoResponse) Reset()         { *m = DiskRtInfoResponse{} }
 func (m *DiskRtInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*DiskRtInfoResponse) ProtoMessage()    {}
 func (*DiskRtInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{21}
+	return fileDescriptor_3ada617ac924eafc, []int{26}
 }
 func (m *DiskRtInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1666,7 +2036,7 @@ func (m *DiskRtInfo) Reset()         { *m = DiskRtInfo{} }
 func (m *DiskRtInfo) String() string { return proto.CompactTextString(m) }
 func (*DiskRtInfo) ProtoMessage()    {}
 func (*DiskRtInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{22}
+	return fileDescriptor_3ada617ac924eafc, []int{27}
 }
 func (m *DiskRtInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1765,7 +2135,7 @@ func (m *NetworkRtInfoResponse) Reset()         { *m = NetworkRtInfoResponse{} }
 func (m *NetworkRtInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*NetworkRtInfoResponse) ProtoMessage()    {}
 func (*NetworkRtInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{23}
+	return fileDescriptor_3ada617ac924eafc, []int{28}
 }
 func (m *NetworkRtInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1836,7 +2206,7 @@ func (m *NetworkRtInfo) Reset()         { *m = NetworkRtInfo{} }
 func (m *NetworkRtInfo) String() string { return proto.CompactTextString(m) }
 func (*NetworkRtInfo) ProtoMessage()    {}
 func (*NetworkRtInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{24}
+	return fileDescriptor_3ada617ac924eafc, []int{29}
 }
 func (m *NetworkRtInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1894,7 +2264,7 @@ func (m *NetworkRtInfo) GetPktsOut() float64 {
 }
 
 type MonitoringConfigRequest struct {
-	Item                 *MonitoringConfigInfo `protobuf:"bytes,1,opt,name=item,json=monitoring,proto3" json:"monitoring" yaml:"monitoring"`
+	Item                 *MonitoringConfigInfo `protobuf:"bytes,1,opt,name=item,json=common,proto3" json:"common" yaml:"common"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -1904,7 +2274,7 @@ func (m *MonitoringConfigRequest) Reset()         { *m = MonitoringConfigRequest
 func (m *MonitoringConfigRequest) String() string { return proto.CompactTextString(m) }
 func (*MonitoringConfigRequest) ProtoMessage()    {}
 func (*MonitoringConfigRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{25}
+	return fileDescriptor_3ada617ac924eafc, []int{30}
 }
 func (m *MonitoringConfigRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1941,7 +2311,7 @@ func (m *MonitoringConfigRequest) GetItem() *MonitoringConfigInfo {
 }
 
 type MonitoringConfigResponse struct {
-	Item                 *MonitoringConfigInfo `protobuf:"bytes,1,opt,name=item,json=monitoring,proto3" json:"monitoring" yaml:"monitoring"`
+	Item                 *MonitoringConfigInfo `protobuf:"bytes,1,opt,name=item,json=common,proto3" json:"common" yaml:"common"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -1951,7 +2321,7 @@ func (m *MonitoringConfigResponse) Reset()         { *m = MonitoringConfigRespon
 func (m *MonitoringConfigResponse) String() string { return proto.CompactTextString(m) }
 func (*MonitoringConfigResponse) ProtoMessage()    {}
 func (*MonitoringConfigResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{26}
+	return fileDescriptor_3ada617ac924eafc, []int{31}
 }
 func (m *MonitoringConfigResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2002,7 +2372,7 @@ func (m *MonitoringConfigInfo) Reset()         { *m = MonitoringConfigInfo{} }
 func (m *MonitoringConfigInfo) String() string { return proto.CompactTextString(m) }
 func (*MonitoringConfigInfo) ProtoMessage()    {}
 func (*MonitoringConfigInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{27}
+	return fileDescriptor_3ada617ac924eafc, []int{32}
 }
 func (m *MonitoringConfigInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2082,7 +2452,7 @@ func (m *InstallTelegrafRequest) Reset()         { *m = InstallTelegrafRequest{}
 func (m *InstallTelegrafRequest) String() string { return proto.CompactTextString(m) }
 func (*InstallTelegrafRequest) ProtoMessage()    {}
 func (*InstallTelegrafRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3ada617ac924eafc, []int{28}
+	return fileDescriptor_3ada617ac924eafc, []int{33}
 }
 func (m *InstallTelegrafRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2158,7 +2528,12 @@ func init() {
 	proto.RegisterType((*MessageResponse)(nil), "cbdragonfly.MessageResponse")
 	proto.RegisterType((*Tags)(nil), "cbdragonfly.Tags")
 	proto.RegisterType((*VMMonQryRequest)(nil), "cbdragonfly.VMMonQryRequest")
+	proto.RegisterType((*VMOndemandMonQryRequest)(nil), "cbdragonfly.VMOndemandMonQryRequest")
 	proto.RegisterType((*VMLatestMonQryRequest)(nil), "cbdragonfly.VMLatestMonQryRequest")
+	proto.RegisterType((*CpuOndemandInfoResponse)(nil), "cbdragonfly.CpuOndemandInfoResponse")
+	proto.RegisterType((*CpuOndemandInfo)(nil), "cbdragonfly.CpuOndemandInfo")
+	proto.RegisterType((*CpuFreqOndemandInfoResponse)(nil), "cbdragonfly.CpuFreqOndemandInfoResponse")
+	proto.RegisterType((*CpuFreqOndemandInfo)(nil), "cbdragonfly.CpuFreqOndemandInfo")
 	proto.RegisterType((*CpuInfoResponse)(nil), "cbdragonfly.CpuInfoResponse")
 	proto.RegisterType((*CpuInfo)(nil), "cbdragonfly.CpuInfo")
 	proto.RegisterType((*CpuFreqInfoResponse)(nil), "cbdragonfly.CpuFreqInfoResponse")
@@ -2188,144 +2563,153 @@ func init() {
 func init() { proto.RegisterFile("cbdragonfly/cbdragonfly.proto", fileDescriptor_3ada617ac924eafc) }
 
 var fileDescriptor_3ada617ac924eafc = []byte{
-	// 2185 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x5a, 0x4f, 0x8f, 0x1b, 0x49,
-	0x15, 0x8f, 0xc7, 0xf6, 0xfc, 0x29, 0x4f, 0x32, 0x93, 0x4e, 0x26, 0xe3, 0x84, 0xcd, 0x74, 0x52,
-	0xcb, 0x8a, 0x95, 0x16, 0x36, 0x22, 0x41, 0x42, 0x02, 0xc4, 0x4a, 0x99, 0x40, 0x98, 0x24, 0x93,
-	0x65, 0x2b, 0x43, 0xf6, 0x80, 0x90, 0xe9, 0xb1, 0x6b, 0x3c, 0xad, 0xb1, 0xbb, 0xbd, 0xdd, 0xed,
-	0x04, 0xb3, 0xdc, 0x56, 0x1c, 0xf8, 0x00, 0x48, 0x7b, 0xe4, 0x8a, 0x04, 0x7c, 0x0d, 0x40, 0x1c,
-	0x80, 0x2f, 0xd0, 0x42, 0xe1, 0xe6, 0x03, 0x07, 0x4b, 0x48, 0x5c, 0x10, 0xe8, 0xbd, 0xfa, 0xf3,
-	0xaa, 0xdb, 0x9e, 0xc1, 0x11, 0x89, 0x26, 0xab, 0xcd, 0xc9, 0xf5, 0x7e, 0xaf, 0xde, 0xaf, 0x5e,
-	0xbf, 0x7a, 0xaf, 0xfe, 0x74, 0x9b, 0x5d, 0x6d, 0xef, 0x77, 0x92, 0xa0, 0x1b, 0x47, 0x07, 0xbd,
-	0xd1, 0x0d, 0xa7, 0xfd, 0xee, 0x20, 0x89, 0xb3, 0xd8, 0x6b, 0x38, 0xd0, 0x95, 0x8b, 0xdd, 0xb8,
-	0x1b, 0x23, 0x7e, 0x03, 0x5a, 0xaa, 0x0b, 0x5f, 0x62, 0xf5, 0xef, 0xf4, 0x07, 0xd9, 0x88, 0xdf,
-	0x63, 0x6b, 0xbb, 0x32, 0x4d, 0x83, 0xae, 0x14, 0x32, 0x1d, 0xc4, 0x51, 0x2a, 0xbd, 0xaf, 0xb3,
-	0xa5, 0xbe, 0x82, 0x9a, 0x95, 0x6b, 0x95, 0xb7, 0x57, 0x6e, 0x5f, 0x1d, 0xe7, 0xbe, 0x81, 0x26,
-	0xb9, 0x7f, 0x6e, 0x14, 0xf4, 0x7b, 0xdf, 0xe0, 0x1a, 0xe0, 0xc2, 0xa8, 0xf8, 0xb7, 0x58, 0x6d,
-	0x2f, 0xe8, 0xa6, 0xde, 0xd7, 0xd8, 0xd2, 0x61, 0x9c, 0x66, 0xad, 0xb0, 0xa3, 0x09, 0xbe, 0x30,
-	0xce, 0xfd, 0x45, 0x80, 0x76, 0x3a, 0x93, 0xdc, 0x3f, 0xab, 0xec, 0x95, 0xcc, 0x85, 0x56, 0xf0,
-	0x5f, 0x56, 0xd9, 0xda, 0xe3, 0xdd, 0xdd, 0x38, 0xfa, 0x20, 0x19, 0x09, 0xf9, 0xd1, 0x50, 0xa6,
-	0x99, 0x77, 0x83, 0xd5, 0xa3, 0x94, 0x78, 0x2e, 0x8f, 0x73, 0x5f, 0x01, 0x93, 0xdc, 0x5f, 0x55,
-	0x34, 0x28, 0x72, 0xa1, 0x60, 0xf4, 0xbd, 0x1d, 0xa2, 0xc9, 0x82, 0xe3, 0xbb, 0x82, 0x1c, 0xdf,
-	0x15, 0x00, 0xbe, 0xab, 0x16, 0x8c, 0xf4, 0xa4, 0x0f, 0x66, 0x55, 0x1a, 0x09, 0x01, 0x1a, 0x09,
-	0x45, 0x2e, 0x14, 0xec, 0xdd, 0x61, 0x8d, 0x81, 0x4c, 0xc2, 0xb8, 0xd3, 0xca, 0x46, 0x03, 0xd9,
-	0xac, 0xa1, 0xd9, 0x9b, 0xe3, 0xdc, 0x67, 0x0a, 0xde, 0x1b, 0x0d, 0x20, 0x58, 0xe7, 0x95, 0x2d,
-	0x61, 0x5c, 0x38, 0x1d, 0xbc, 0x0e, 0xbb, 0x90, 0x66, 0x41, 0x16, 0xa6, 0x59, 0xd8, 0x4e, 0x5b,
-	0xed, 0x24, 0xcc, 0x64, 0x12, 0x06, 0xcd, 0x3a, 0xb2, 0xdd, 0x1a, 0xe7, 0xbe, 0x47, 0xea, 0x6d,
-	0xad, 0x9d, 0xe4, 0xfe, 0x65, 0xc5, 0x3a, 0xad, 0xe3, 0x62, 0x86, 0x81, 0xf7, 0x4d, 0xb6, 0xdc,
-	0x19, 0x26, 0x41, 0x16, 0xc6, 0x51, 0x73, 0x11, 0xa9, 0xfd, 0x71, 0xee, 0x5b, 0x6c, 0x92, 0xfb,
-	0x6b, 0x8a, 0xd0, 0x20, 0x5c, 0x58, 0x25, 0xff, 0x74, 0x81, 0x6d, 0x3c, 0xde, 0x7d, 0x10, 0x64,
-	0x32, 0xcd, 0x3e, 0x33, 0xb3, 0x73, 0x4c, 0x5c, 0x6b, 0x2f, 0x34, 0xae, 0xfc, 0x8f, 0x15, 0xb6,
-	0xb6, 0x3d, 0x18, 0xee, 0x44, 0x07, 0xb1, 0xad, 0x9e, 0x77, 0x58, 0x2d, 0x0a, 0xfa, 0xa6, 0x74,
-	0x36, 0xc7, 0xb9, 0x8f, 0xf2, 0x24, 0xf7, 0x1b, 0x3a, 0x24, 0x41, 0x5f, 0x72, 0x81, 0xa0, 0xf7,
-	0x6d, 0x56, 0xcb, 0x82, 0x6e, 0x8a, 0xd1, 0x68, 0xdc, 0x3c, 0xff, 0xae, 0x5b, 0xcb, 0x50, 0x4a,
-	0xca, 0x1e, 0xba, 0x90, 0x3d, 0x48, 0x5c, 0x20, 0xe8, 0xed, 0xb0, 0xc5, 0x27, 0x41, 0x6f, 0x28,
-	0xd3, 0x66, 0xf5, 0x5a, 0xf5, 0xed, 0xc6, 0xcd, 0x8b, 0x05, 0x06, 0xed, 0x9a, 0x2a, 0x3f, 0xd5,
-	0x8f, 0xca, 0x4f, 0xc9, 0x5c, 0x68, 0x05, 0xff, 0xf5, 0x22, 0x5b, 0xd2, 0x06, 0xde, 0x87, 0x6c,
-	0xad, 0x3d, 0x18, 0xb6, 0x86, 0x59, 0xd8, 0x0b, 0x7f, 0xaa, 0xd2, 0x06, 0x1e, 0xa7, 0x72, 0xfb,
-	0x2b, 0xe3, 0xdc, 0x2f, 0xab, 0x26, 0xb9, 0x7f, 0x49, 0x51, 0x96, 0x14, 0x5c, 0x94, 0xbb, 0x7a,
-	0xdb, 0x8c, 0x01, 0x94, 0x8e, 0xd2, 0x4c, 0xf6, 0xf1, 0xa9, 0x2b, 0xaa, 0x66, 0x08, 0xa5, 0x9a,
-	0x21, 0x8c, 0x0b, 0xa7, 0x03, 0x64, 0x33, 0x48, 0x61, 0xa7, 0x27, 0x31, 0x1f, 0x2a, 0x2a, 0x9b,
-	0x0d, 0x46, 0xd9, 0x6c, 0x10, 0x2e, 0xac, 0xd2, 0x78, 0x10, 0xc6, 0x4f, 0x83, 0x30, 0xc3, 0x7c,
-	0x70, 0x3c, 0x50, 0x68, 0xd1, 0x03, 0x85, 0x69, 0x0f, 0x94, 0xe0, 0xbd, 0xc7, 0x56, 0x40, 0x3a,
-	0x0c, 0xa3, 0x2c, 0xc1, 0x5a, 0xad, 0xdc, 0xbe, 0x3e, 0xce, 0x7d, 0x02, 0x27, 0xb9, 0xbf, 0x4e,
-	0x14, 0x08, 0x71, 0x41, 0x6a, 0x43, 0x90, 0x22, 0xc1, 0x62, 0x91, 0x20, 0x9d, 0x26, 0x48, 0x1d,
-	0x02, 0x6c, 0x9b, 0x18, 0x0c, 0x53, 0x99, 0x34, 0x97, 0x8a, 0x31, 0x00, 0xac, 0x18, 0x03, 0x40,
-	0x74, 0x0c, 0xa0, 0x69, 0x8c, 0xa3, 0xb0, 0x2d, 0x9b, 0xcb, 0x45, 0x63, 0xc0, 0x8a, 0xc6, 0x80,
-	0x68, 0x63, 0x68, 0x5a, 0xd7, 0x33, 0x19, 0xf4, 0x9a, 0x2b, 0x25, 0xd7, 0x01, 0x2c, 0xb9, 0x0e,
-	0x90, 0x71, 0x1d, 0xda, 0x86, 0xa0, 0x0b, 0x4b, 0x48, 0x93, 0x15, 0x09, 0x10, 0x2c, 0x12, 0x20,
-	0xa4, 0x09, 0xb0, 0xed, 0x3d, 0x62, 0xe7, 0xac, 0xa0, 0x1e, 0xa2, 0x81, 0x2c, 0xef, 0x8c, 0x73,
-	0xbf, 0xa4, 0x99, 0xe4, 0xfe, 0x46, 0x89, 0x4a, 0x3f, 0x50, 0xa9, 0x23, 0x94, 0x6d, 0x16, 0xf6,
-	0x65, 0x73, 0x95, 0xca, 0x16, 0x64, 0xa7, 0xec, 0x42, 0x2c, 0x5b, 0xfc, 0xf9, 0x6b, 0x85, 0x5d,
-	0xd8, 0x1e, 0x0c, 0xbf, 0x9b, 0xc8, 0x8f, 0x4e, 0xaf, 0xf6, 0x77, 0x4b, 0xb5, 0xdf, 0x2c, 0xd7,
-	0xbe, 0x71, 0x6f, 0xbe, 0xfa, 0xff, 0x98, 0x35, 0x1c, 0x1b, 0x3b, 0xcd, 0x03, 0x29, 0x3b, 0xba,
-	0xf8, 0x69, 0x9a, 0x01, 0x2c, 0x4d, 0x33, 0x40, 0x66, 0x9a, 0xa1, 0x6d, 0x03, 0xba, 0x30, 0x4f,
-	0x40, 0xff, 0x5c, 0x61, 0xde, 0xae, 0xec, 0xc7, 0xc9, 0xe8, 0xf4, 0xe2, 0xf9, 0xa0, 0x14, 0xcf,
-	0xcd, 0x02, 0x03, 0x79, 0x37, 0x5f, 0x38, 0x7f, 0x55, 0x63, 0x8c, 0x6c, 0x60, 0x45, 0xed, 0xcb,
-	0xfe, 0x71, 0x2b, 0x6a, 0x49, 0x45, 0x2b, 0x6a, 0x49, 0xc1, 0x45, 0xb9, 0x2b, 0xcc, 0x13, 0x40,
-	0x59, 0x9c, 0x05, 0x3d, 0xbd, 0xa0, 0xe2, 0x3c, 0x59, 0x90, 0xe6, 0xc9, 0x42, 0x5c, 0x90, 0x1a,
-	0x16, 0x03, 0xe4, 0x4c, 0x65, 0xc7, 0x5d, 0x4d, 0x0d, 0x46, 0x8b, 0x81, 0x41, 0xb8, 0xb0, 0x4a,
-	0x63, 0x7c, 0x90, 0x48, 0xa9, 0xd7, 0x52, 0x6b, 0x0c, 0x58, 0xd1, 0x18, 0x10, 0x6d, 0x0c, 0x4d,
-	0x58, 0x8a, 0xa1, 0x9d, 0x1e, 0x06, 0x89, 0xec, 0xe8, 0x65, 0x14, 0x97, 0x62, 0x42, 0x69, 0x29,
-	0x26, 0x8c, 0x0b, 0xa7, 0x83, 0x77, 0x97, 0x35, 0x40, 0xda, 0x1f, 0x1e, 0x1c, 0xc8, 0x24, 0xd5,
-	0x6b, 0xe9, 0x5b, 0xe3, 0xdc, 0x77, 0xe1, 0x49, 0xee, 0x7b, 0x44, 0xa3, 0x41, 0x2e, 0xdc, 0x2e,
-	0xc6, 0x9b, 0x76, 0xd0, 0x3e, 0x94, 0x1d, 0xbd, 0xa6, 0x5a, 0x6f, 0x14, 0x5a, 0xf4, 0x46, 0x61,
-	0xda, 0x1b, 0x25, 0xd8, 0xa4, 0x5f, 0x9e, 0x27, 0xe9, 0xff, 0x54, 0x61, 0xeb, 0x77, 0xc2, 0xf4,
-	0xe8, 0xf4, 0x52, 0xfe, 0x5e, 0x29, 0xe5, 0x37, 0x0a, 0x0c, 0xc6, 0xb7, 0xf9, 0x12, 0xfe, 0x17,
-	0x75, 0xb6, 0x6c, 0x2c, 0xe0, 0x29, 0x30, 0x27, 0x54, 0x8e, 0xa3, 0x17, 0x3a, 0x1f, 0xb4, 0x17,
-	0x2a, 0x17, 0x6a, 0x26, 0x0f, 0x12, 0x19, 0x74, 0x5a, 0xfb, 0xa3, 0x4c, 0xa6, 0xee, 0xa1, 0x80,
-	0x50, 0x8a, 0x3c, 0x61, 0x5c, 0x38, 0x1d, 0xa0, 0x0e, 0x50, 0xc2, 0xf0, 0x57, 0xa9, 0x0e, 0x2c,
-	0x48, 0x75, 0x60, 0x21, 0x2e, 0x48, 0x0d, 0x47, 0x4c, 0x10, 0x52, 0x9d, 0xc7, 0x78, 0xc4, 0x44,
-	0x80, 0x8e, 0x98, 0x28, 0x72, 0xa1, 0x60, 0x30, 0x50, 0x55, 0x57, 0x27, 0x03, 0x53, 0x71, 0xda,
-	0x40, 0x57, 0x9b, 0x82, 0x21, 0x28, 0x58, 0x65, 0x8b, 0x14, 0x14, 0x5d, 0x61, 0x3a, 0x28, 0xaa,
-	0xba, 0x10, 0xf4, 0xee, 0xb3, 0x55, 0xf8, 0x6d, 0x0d, 0x64, 0xd2, 0x96, 0x51, 0xa6, 0x13, 0xf2,
-	0x4b, 0xe3, 0xdc, 0x2f, 0xe0, 0x93, 0xdc, 0xbf, 0x40, 0xc6, 0x06, 0xe5, 0xa2, 0xd0, 0x09, 0x8a,
-	0xe4, 0x29, 0x9c, 0x59, 0x75, 0x88, 0x97, 0xa9, 0x48, 0x1c, 0x98, 0x8a, 0xc4, 0x01, 0xb9, 0x70,
-	0xbb, 0xc0, 0x54, 0x29, 0x11, 0xc3, 0xbc, 0x42, 0x53, 0x45, 0x28, 0x4d, 0x15, 0x61, 0x5c, 0x38,
-	0x1d, 0xbc, 0x5b, 0x6c, 0x11, 0xa5, 0x54, 0xef, 0xfe, 0x98, 0x5e, 0x0a, 0xa1, 0xf4, 0x52, 0x32,
-	0x17, 0x5a, 0x61, 0x2b, 0xab, 0x31, 0xef, 0xfe, 0xfc, 0x50, 0x66, 0x4f, 0xe3, 0xe4, 0xe8, 0x55,
-	0xdd, 0x9f, 0x1d, 0xf7, 0xe6, 0xab, 0xaf, 0xdf, 0x2d, 0xb0, 0x86, 0x63, 0x04, 0x4b, 0x2f, 0xce,
-	0x49, 0x2b, 0x34, 0x5b, 0x09, 0x2e, 0xbd, 0x06, 0xa3, 0xa5, 0xd7, 0x20, 0x5c, 0x58, 0x25, 0x54,
-	0x8b, 0x6a, 0xc7, 0xc3, 0xcc, 0xdd, 0x35, 0x2c, 0x48, 0xd5, 0x62, 0x21, 0x2e, 0x48, 0x0d, 0x37,
-	0xb9, 0xc1, 0x51, 0x86, 0x83, 0xab, 0x62, 0xc3, 0x9b, 0x9c, 0x86, 0xe8, 0x26, 0xa7, 0x01, 0x2e,
-	0x8c, 0x0a, 0xdc, 0xc6, 0x26, 0x0c, 0xec, 0xec, 0x18, 0x06, 0x23, 0xb7, 0x0d, 0xc2, 0x85, 0x55,
-	0xda, 0x24, 0xa8, 0xcf, 0x93, 0x04, 0xff, 0xae, 0xb0, 0xf3, 0xdb, 0x83, 0xa1, 0xc8, 0x0a, 0x29,
-	0x70, 0x07, 0xf6, 0x8b, 0x2c, 0x09, 0xdb, 0x2d, 0x27, 0x13, 0xf4, 0x3a, 0x0f, 0xf0, 0xc3, 0xc0,
-	0x4d, 0x61, 0xc2, 0x70, 0x9d, 0x37, 0xc2, 0x73, 0x1d, 0x6e, 0xbc, 0xbb, 0xac, 0x8e, 0x73, 0x88,
-	0x91, 0x6a, 0xdc, 0xbc, 0x54, 0x3e, 0xa7, 0x29, 0x0f, 0xf5, 0xa5, 0x16, 0x3a, 0x3a, 0x97, 0x5a,
-	0x10, 0xe1, 0x52, 0x0b, 0xbf, 0xde, 0x97, 0xcd, 0x2d, 0xb8, 0x46, 0xc3, 0x3e, 0xe9, 0xef, 0x38,
-	0x2b, 0x08, 0x48, 0x5c, 0x20, 0xc8, 0x7f, 0x5b, 0x65, 0x2b, 0x96, 0xfd, 0xf5, 0x95, 0xee, 0x55,
-	0xbf, 0xd2, 0xf1, 0x9f, 0x2f, 0xb0, 0x0d, 0x7d, 0x02, 0x3f, 0xfd, 0x9c, 0xbd, 0x5f, 0xcc, 0xd9,
-	0x2b, 0xb3, 0xee, 0x16, 0x2f, 0x29, 0x6f, 0xbf, 0xcf, 0xce, 0x16, 0x06, 0xf8, 0xbf, 0xaf, 0x22,
-	0xfc, 0x93, 0x05, 0x76, 0x51, 0x9d, 0xc5, 0x4f, 0x3f, 0xb0, 0xf7, 0x8a, 0x81, 0xbd, 0x3c, 0xe3,
-	0x92, 0xf1, 0x92, 0xe2, 0xfa, 0xcf, 0x2a, 0x5b, 0x75, 0x07, 0x78, 0x7d, 0x27, 0xf9, 0x5c, 0xdc,
-	0x49, 0xf8, 0x7f, 0x2a, 0xcc, 0x83, 0x83, 0xf9, 0xe9, 0xe7, 0xfe, 0xf7, 0x8a, 0xb9, 0xbf, 0x39,
-	0x75, 0xdb, 0x78, 0x49, 0x99, 0xff, 0x9b, 0x1a, 0x63, 0x44, 0x0f, 0xe9, 0xd9, 0x09, 0xd3, 0xa3,
-	0x96, 0x73, 0x43, 0xc1, 0xf4, 0xb4, 0x20, 0xa5, 0xa7, 0x85, 0xb8, 0x20, 0x35, 0x4c, 0x0b, 0x0a,
-	0x6e, 0x82, 0x63, 0xe4, 0x08, 0xa5, 0xc8, 0x11, 0xc6, 0x85, 0xd3, 0xc1, 0x7a, 0xe1, 0x24, 0x39,
-	0x79, 0xa1, 0xb3, 0xdc, 0xf5, 0x42, 0xa5, 0x39, 0xa9, 0xbd, 0x1f, 0xb2, 0x75, 0x25, 0x38, 0xf5,
-	0xab, 0xf2, 0xfd, 0xc6, 0x38, 0xf7, 0xa7, 0x74, 0x93, 0xdc, 0xdf, 0x74, 0xe9, 0xdc, 0x0a, 0x9e,
-	0xea, 0x0c, 0xe7, 0xbb, 0xa3, 0xfd, 0x16, 0x5c, 0x74, 0x74, 0x11, 0xe0, 0xf9, 0x4e, 0x43, 0x74,
-	0xbe, 0xd3, 0x00, 0x17, 0x46, 0x05, 0xb1, 0x39, 0xda, 0x6f, 0xc1, 0xa1, 0x3d, 0x93, 0x91, 0x4e,
-	0x7d, 0x8c, 0x0d, 0xa1, 0x14, 0x1b, 0xc2, 0xb8, 0x70, 0x3a, 0x40, 0x09, 0xc7, 0x83, 0x54, 0x0d,
-	0xef, 0xbc, 0xdd, 0x34, 0x18, 0x95, 0xb0, 0x41, 0xb8, 0xb0, 0x4a, 0x08, 0x2c, 0xb4, 0xf1, 0xde,
-	0xa0, 0xaf, 0x3a, 0x18, 0x58, 0x0b, 0x52, 0x60, 0x2d, 0xc4, 0x05, 0xa9, 0x71, 0x23, 0xd6, 0x27,
-	0xed, 0x57, 0x7c, 0x23, 0x2e, 0x78, 0xf9, 0xc2, 0xcb, 0xe6, 0x93, 0x05, 0x76, 0xb6, 0x30, 0xc2,
-	0xe7, 0xf1, 0xce, 0xc1, 0x3f, 0x66, 0x9b, 0xbb, 0x71, 0x14, 0x66, 0x71, 0x12, 0x46, 0xdd, 0xed,
-	0x38, 0x3a, 0x08, 0xbb, 0xe6, 0xfb, 0xd7, 0x8f, 0x59, 0x2d, 0x84, 0x43, 0x6f, 0x05, 0xa7, 0xe6,
-	0x7a, 0x71, 0x2b, 0x2f, 0xd9, 0xe0, 0x0c, 0xa9, 0x54, 0xb1, 0x1a, 0x27, 0x55, 0x2c, 0x06, 0xa9,
-	0x42, 0xc2, 0xcf, 0x58, 0x73, 0x7a, 0x70, 0x9d, 0x8c, 0x2f, 0x7f, 0xf4, 0xdf, 0x57, 0xd9, 0xc5,
-	0x59, 0x4c, 0xde, 0x23, 0x76, 0x2e, 0xe8, 0xca, 0x28, 0x6b, 0x85, 0x51, 0x26, 0x93, 0x27, 0x41,
-	0x0f, 0x9d, 0xa8, 0xab, 0x37, 0xf0, 0x45, 0x0d, 0xbd, 0x81, 0x2f, 0xe2, 0x5c, 0x94, 0x3a, 0x7a,
-	0x6d, 0xe6, 0xb5, 0xe3, 0x5e, 0x4f, 0xb6, 0xb3, 0x38, 0x21, 0xe2, 0x05, 0x24, 0xc6, 0x2f, 0x76,
-	0xd3, 0x5a, 0xfa, 0x62, 0x37, 0xad, 0xe3, 0x62, 0x86, 0x81, 0xd7, 0x62, 0xe7, 0x53, 0xd8, 0x15,
-	0x87, 0x3d, 0x49, 0x63, 0x54, 0x71, 0x8c, 0xaf, 0x8e, 0x73, 0x7f, 0x5a, 0x39, 0xc9, 0xfd, 0xa6,
-	0xfe, 0x28, 0x58, 0x56, 0x71, 0x31, 0xdd, 0x1d, 0x42, 0xd3, 0x0f, 0x7e, 0xd2, 0xc2, 0xef, 0xdf,
-	0xed, 0x78, 0x18, 0xa9, 0x8c, 0xd3, 0xa1, 0x29, 0x6a, 0x28, 0x34, 0x45, 0x9c, 0x8b, 0x52, 0x47,
-	0x28, 0x1d, 0x15, 0xac, 0x2c, 0x53, 0xaf, 0x9b, 0xea, 0xaa, 0x74, 0x14, 0xb8, 0xb7, 0xf7, 0x80,
-	0x4a, 0xc7, 0x42, 0x5c, 0x90, 0x9a, 0xff, 0x63, 0x81, 0x5d, 0xda, 0x89, 0xd2, 0x2c, 0xe8, 0xf5,
-	0xf6, 0x64, 0x4f, 0x76, 0x93, 0xe0, 0xe0, 0x33, 0xf0, 0x11, 0xf7, 0x3d, 0xb6, 0x32, 0x18, 0xee,
-	0xf7, 0xc2, 0x76, 0x2b, 0x1c, 0xe8, 0x25, 0x0b, 0x1f, 0xdb, 0x82, 0xf4, 0xd8, 0x16, 0xe2, 0x82,
-	0xd4, 0x40, 0x30, 0x4c, 0x65, 0xa2, 0x56, 0xeb, 0x3a, 0x11, 0x58, 0x90, 0x08, 0x2c, 0xc4, 0x05,
-	0xa9, 0xe1, 0x59, 0xd3, 0xf4, 0xb0, 0x75, 0x24, 0x47, 0xfa, 0xbb, 0x39, 0x3e, 0xab, 0x86, 0xe8,
-	0x59, 0x35, 0xc0, 0x85, 0x51, 0xdd, 0xfc, 0xd7, 0x0a, 0xab, 0xee, 0xbe, 0xff, 0xd0, 0x7b, 0x9f,
-	0xad, 0xdd, 0x95, 0x19, 0xfe, 0xad, 0xc1, 0x7c, 0x5c, 0x7d, 0xa3, 0x50, 0xa9, 0xa5, 0x7f, 0x3c,
-	0x5c, 0x79, 0x63, 0xd6, 0x17, 0x5c, 0x53, 0xf3, 0xfc, 0x8c, 0xf7, 0x21, 0xbb, 0xe0, 0x10, 0xda,
-	0xcf, 0x35, 0x27, 0x93, 0x5e, 0x3b, 0xee, 0xd3, 0x90, 0x43, 0xfc, 0x03, 0xe6, 0x19, 0x62, 0xe7,
-	0xbb, 0xc5, 0xc9, 0xbc, 0xfe, 0x31, 0x9f, 0x48, 0x1c, 0xda, 0x0f, 0xd8, 0xba, 0xa1, 0xb5, 0x6f,
-	0x87, 0x4f, 0x26, 0xbd, 0x3a, 0xf3, 0x25, 0xf4, 0xec, 0x10, 0xb8, 0x2f, 0xc4, 0x9e, 0x27, 0x04,
-	0x33, 0x5e, 0x0e, 0xf2, 0x33, 0xde, 0x8f, 0xd8, 0x06, 0x12, 0xdb, 0xff, 0x3a, 0x98, 0x29, 0xe3,
-	0x25, 0xea, 0x19, 0x7f, 0x86, 0xb8, 0xb2, 0x35, 0xfb, 0xb5, 0x8e, 0x43, 0x2f, 0xd9, 0xe5, 0x29,
-	0x7a, 0x3b, 0x81, 0xf3, 0x0c, 0xc1, 0x8f, 0xbf, 0x85, 0x3b, 0xc3, 0xb4, 0x59, 0xb3, 0x38, 0x8c,
-	0x33, 0x9d, 0xf3, 0x8c, 0x72, 0xfd, 0xd8, 0x2b, 0xa9, 0x33, 0x48, 0x8b, 0x5d, 0x2a, 0x0e, 0x62,
-	0x27, 0x77, 0x9e, 0x21, 0xfc, 0x63, 0x4e, 0xfe, 0x27, 0x05, 0xcb, 0x9d, 0xea, 0xe7, 0x0f, 0xd6,
-	0xcc, 0xf3, 0x1c, 0x4e, 0xf9, 0xea, 0x23, 0x89, 0x73, 0x81, 0xbb, 0x9b, 0xf7, 0xc5, 0x13, 0xb7,
-	0x51, 0xc3, 0xfd, 0xd6, 0xff, 0xe8, 0x65, 0xe9, 0xef, 0xb3, 0xd5, 0xbb, 0x2e, 0xbd, 0x57, 0x30,
-	0xc4, 0x7f, 0x60, 0xcd, 0x4f, 0xb6, 0xcb, 0xce, 0x09, 0x99, 0xbe, 0x30, 0xba, 0xc7, 0x6c, 0xad,
-	0xb4, 0x25, 0x78, 0x6f, 0x16, 0x6c, 0x67, 0x6f, 0x18, 0xa5, 0x15, 0xaa, 0xf4, 0xe7, 0x31, 0x7e,
-	0xe6, 0xf6, 0xfa, 0x1f, 0x9e, 0x6d, 0x55, 0xfe, 0xf2, 0x6c, 0xab, 0xf2, 0xb7, 0x67, 0x5b, 0x95,
-	0x4f, 0xff, 0xbe, 0x75, 0x66, 0x7f, 0x11, 0xff, 0x73, 0x76, 0xeb, 0xbf, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0x03, 0x82, 0x76, 0xb9, 0xb7, 0x26, 0x00, 0x00,
+	// 2334 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x5a, 0x5b, 0x8f, 0x1b, 0x49,
+	0xf5, 0x8f, 0x6f, 0x73, 0x29, 0x4f, 0x32, 0x93, 0x4e, 0x26, 0xe3, 0x4c, 0x92, 0xe9, 0xa4, 0x76,
+	0x57, 0xff, 0x48, 0xfb, 0x67, 0x23, 0x12, 0xa4, 0x95, 0x58, 0x89, 0x95, 0x32, 0x81, 0x90, 0x8b,
+	0x13, 0x52, 0x19, 0x66, 0x1f, 0x10, 0xb2, 0x7a, 0xec, 0x1a, 0x4f, 0x6b, 0xdc, 0xdd, 0xde, 0xee,
+	0x76, 0x82, 0xe1, 0x8d, 0x15, 0x48, 0x7c, 0x00, 0xa4, 0x3c, 0xf2, 0x8a, 0x04, 0xbc, 0xf0, 0x21,
+	0x00, 0xf1, 0xc0, 0xe5, 0x03, 0xb4, 0x50, 0x78, 0xf3, 0x03, 0x12, 0x96, 0x78, 0x44, 0xa0, 0x53,
+	0xb7, 0x53, 0xdd, 0xb6, 0x07, 0x47, 0x49, 0x34, 0x89, 0x36, 0x4f, 0xae, 0xfa, 0x9d, 0x3a, 0x97,
+	0x3e, 0x75, 0xce, 0xa9, 0x8b, 0x8b, 0x5c, 0x6a, 0xef, 0x75, 0x62, 0xaf, 0x1b, 0x85, 0xfb, 0xbd,
+	0xe1, 0x35, 0xab, 0xfd, 0x51, 0x3f, 0x8e, 0xd2, 0xc8, 0xa9, 0x5b, 0xd0, 0xe6, 0xd9, 0x6e, 0xd4,
+	0x8d, 0x04, 0x7e, 0x0d, 0x5a, 0x72, 0x08, 0x5d, 0x24, 0xb5, 0x6f, 0x06, 0xfd, 0x74, 0x48, 0xef,
+	0x92, 0xd5, 0x26, 0x4f, 0x12, 0xaf, 0xcb, 0x19, 0x4f, 0xfa, 0x51, 0x98, 0x70, 0xe7, 0x63, 0xb2,
+	0x18, 0x48, 0xa8, 0x51, 0xba, 0x5c, 0xba, 0xba, 0x7c, 0xf3, 0xd2, 0x28, 0x73, 0x35, 0x34, 0xce,
+	0xdc, 0x53, 0x43, 0x2f, 0xe8, 0x7d, 0x9d, 0x2a, 0x80, 0x32, 0x4d, 0xa2, 0xcf, 0x4a, 0xa4, 0xba,
+	0xe3, 0x75, 0x13, 0xe7, 0xff, 0x49, 0x2d, 0x4c, 0x5a, 0x7e, 0x47, 0xf1, 0x6f, 0x8c, 0x32, 0xb7,
+	0x1a, 0x26, 0x77, 0x3a, 0xe3, 0xcc, 0xad, 0x4b, 0x66, 0xe8, 0x51, 0x26, 0x40, 0xe7, 0x6b, 0x64,
+	0x31, 0x68, 0xfb, 0x62, 0x7c, 0x59, 0x8c, 0xbf, 0x30, 0xca, 0xdc, 0x05, 0x80, 0x04, 0xc7, 0x49,
+	0xa5, 0x4e, 0xf4, 0x29, 0x53, 0x04, 0xd0, 0xf1, 0x24, 0x00, 0x9e, 0x0a, 0xea, 0x78, 0x12, 0xd8,
+	0x3a, 0xa0, 0x47, 0x99, 0x00, 0xe9, 0xcf, 0x2b, 0x64, 0x75, 0xb7, 0xd9, 0x8c, 0xc2, 0x47, 0xf1,
+	0x90, 0xf1, 0xcf, 0x07, 0x3c, 0x49, 0x9d, 0x6b, 0x79, 0x2b, 0xcf, 0x8f, 0x32, 0x57, 0x02, 0xe3,
+	0xcc, 0x5d, 0xd1, 0x66, 0xb6, 0xfc, 0x0e, 0x65, 0x12, 0x16, 0x8e, 0xc9, 0x19, 0x2a, 0x1d, 0x23,
+	0x21, 0xcb, 0x31, 0x12, 0x00, 0xc7, 0xc8, 0x16, 0x68, 0xb2, 0x6d, 0x15, 0x9a, 0x04, 0x80, 0x9a,
+	0x44, 0x97, 0x32, 0x09, 0x3b, 0xb7, 0x48, 0xbd, 0xcf, 0x63, 0x3f, 0xea, 0xb4, 0xd2, 0x61, 0x9f,
+	0x37, 0xaa, 0x82, 0xed, 0xbd, 0x51, 0xe6, 0x12, 0x09, 0xef, 0x0c, 0xfb, 0x30, 0x13, 0xa7, 0x25,
+	0x2f, 0x62, 0x94, 0x59, 0x03, 0x9c, 0x0e, 0x39, 0x93, 0xa4, 0x5e, 0xea, 0x27, 0xa9, 0xdf, 0x4e,
+	0x5a, 0xed, 0xd8, 0x4f, 0x79, 0xec, 0x7b, 0x8d, 0x9a, 0x90, 0x76, 0x63, 0x94, 0xb9, 0x0e, 0x92,
+	0xb7, 0x15, 0x75, 0x9c, 0xb9, 0xe7, 0xa5, 0xd4, 0x49, 0x1a, 0x65, 0x53, 0x18, 0x9c, 0x4f, 0xc8,
+	0x52, 0x67, 0x10, 0x7b, 0xa9, 0x1f, 0x85, 0x8d, 0x05, 0x21, 0xda, 0x1d, 0x65, 0xae, 0xc1, 0xc6,
+	0x99, 0xbb, 0x2a, 0x05, 0x6a, 0x84, 0x32, 0x43, 0xa4, 0xff, 0x2c, 0x91, 0x8d, 0xdd, 0xe6, 0xc3,
+	0xb0, 0xc3, 0x03, 0x2f, 0xec, 0xbc, 0x35, 0xf3, 0xf3, 0x09, 0x59, 0xf2, 0xba, 0x3c, 0x4c, 0x5b,
+	0x7e, 0x5f, 0x4d, 0x8e, 0xf8, 0x66, 0x8d, 0xe1, 0x37, 0x6b, 0x84, 0x32, 0x43, 0xa4, 0xcf, 0xca,
+	0x64, 0x7d, 0xb7, 0x79, 0xdf, 0x4b, 0x79, 0x92, 0xbe, 0x35, 0x5f, 0x3c, 0x23, 0x96, 0xaa, 0xaf,
+	0x34, 0x96, 0xe8, 0x4f, 0xcb, 0x64, 0x63, 0xbb, 0x3f, 0xd0, 0xf1, 0x70, 0x27, 0xdc, 0x8f, 0x4c,
+	0x59, 0xfa, 0x90, 0x54, 0x43, 0x2f, 0xe0, 0xb9, 0x9a, 0xe2, 0x05, 0xdc, 0xaa, 0x29, 0x5e, 0xc0,
+	0xa1, 0xa6, 0x78, 0x01, 0x77, 0xbe, 0x41, 0xaa, 0xa9, 0xd7, 0x4d, 0x84, 0x57, 0xea, 0xd7, 0x4f,
+	0x7f, 0x64, 0x17, 0x49, 0x28, 0x51, 0x92, 0x1f, 0x86, 0x20, 0x3f, 0xf4, 0x28, 0x13, 0x20, 0x28,
+	0x4b, 0xfd, 0x80, 0xdb, 0xc5, 0x05, 0xfa, 0xd6, 0x60, 0x5f, 0x28, 0x83, 0x1f, 0xe7, 0x11, 0x59,
+	0x78, 0xe2, 0xf5, 0x06, 0x3c, 0x69, 0x54, 0x2f, 0x57, 0xae, 0xd6, 0xaf, 0x5f, 0xcc, 0xa9, 0x2b,
+	0x7c, 0x8f, 0xac, 0x6e, 0x72, 0x3c, 0x56, 0x37, 0xd9, 0xa7, 0x4c, 0x11, 0xe8, 0x6f, 0x2b, 0x64,
+	0xb5, 0xc0, 0xe8, 0x7c, 0x46, 0x56, 0xdb, 0xfd, 0x41, 0x6b, 0x90, 0xfa, 0x3d, 0xff, 0x87, 0x32,
+	0xdf, 0xc0, 0x17, 0xa5, 0x9b, 0x5f, 0x19, 0x65, 0x6e, 0x91, 0x34, 0xce, 0xdc, 0x73, 0x52, 0x74,
+	0x81, 0x40, 0x59, 0x71, 0xa8, 0xb3, 0x4d, 0x08, 0x40, 0xc9, 0x30, 0x49, 0x79, 0x20, 0x5c, 0x56,
+	0x92, 0xc5, 0x06, 0x51, 0x2c, 0x36, 0x88, 0x51, 0x66, 0x0d, 0x80, 0x94, 0x80, 0x9e, 0xdf, 0xe9,
+	0x49, 0xaf, 0x95, 0x64, 0x4a, 0x68, 0x0c, 0x53, 0x42, 0x23, 0x94, 0x19, 0xa2, 0xb6, 0xc0, 0x8f,
+	0x9e, 0x7a, 0x7e, 0x2a, 0x82, 0xca, 0xb2, 0x40, 0xa2, 0x79, 0x0b, 0x24, 0xa6, 0x2c, 0x90, 0x1d,
+	0xe7, 0x53, 0xb2, 0x0c, 0xbd, 0x03, 0x3f, 0x4c, 0x63, 0x51, 0xe4, 0x4a, 0x37, 0xaf, 0x8c, 0x32,
+	0x17, 0xc1, 0x71, 0xe6, 0xae, 0xa1, 0x08, 0x01, 0x51, 0x86, 0x64, 0x2d, 0x20, 0x11, 0x02, 0x16,
+	0xf2, 0x02, 0x92, 0x49, 0x01, 0x89, 0x25, 0x40, 0xb6, 0x7f, 0x5c, 0x26, 0x17, 0xb6, 0xfb, 0x83,
+	0x6f, 0xc5, 0xfc, 0xf3, 0xb7, 0x2c, 0x84, 0xef, 0x14, 0x42, 0xf8, 0x6c, 0x31, 0x84, 0xe7, 0x0f,
+	0xdd, 0x5d, 0x72, 0x66, 0x8a, 0x0f, 0x8c, 0x73, 0xfb, 0x9c, 0x77, 0x54, 0xdc, 0xa2, 0x73, 0x01,
+	0x2c, 0x38, 0x17, 0x20, 0xed, 0x5c, 0xd1, 0xfe, 0x43, 0x49, 0xa4, 0xc4, 0xf1, 0x39, 0x14, 0x7d,
+	0x54, 0x79, 0x59, 0x1f, 0xfd, 0x72, 0x81, 0x2c, 0x2a, 0x86, 0x77, 0x69, 0xfd, 0xa6, 0xa7, 0xb5,
+	0xf6, 0xc1, 0x20, 0xe1, 0x71, 0x63, 0x31, 0xef, 0x03, 0xc0, 0xf2, 0x3e, 0x00, 0x44, 0xf9, 0x00,
+	0x9a, 0x9a, 0x39, 0xf4, 0xdb, 0xbc, 0xb1, 0x94, 0x67, 0x06, 0x2c, 0xcf, 0x0c, 0x88, 0x62, 0x86,
+	0xa6, 0x31, 0x3d, 0xe5, 0x5e, 0xaf, 0xb1, 0x5c, 0x30, 0x1d, 0xc0, 0x82, 0xe9, 0x00, 0x69, 0xd3,
+	0xa1, 0xad, 0x05, 0x74, 0x61, 0x7b, 0xd1, 0x20, 0x79, 0x01, 0x02, 0xcc, 0x0b, 0x10, 0x90, 0x12,
+	0x20, 0xda, 0xce, 0x63, 0x72, 0xca, 0x74, 0xe4, 0x47, 0xd4, 0x85, 0x94, 0x0f, 0x47, 0x99, 0x5b,
+	0xa0, 0x8c, 0x33, 0x77, 0xbd, 0x20, 0x4a, 0x7d, 0x50, 0x61, 0xa0, 0x29, 0x4d, 0x2b, 0x73, 0x94,
+	0x26, 0xfa, 0x97, 0x92, 0x29, 0x28, 0xc7, 0x97, 0xfb, 0xcd, 0x42, 0xee, 0x37, 0x8a, 0xb9, 0xaf,
+	0xcd, 0x9b, 0x2f, 0xff, 0x7f, 0x44, 0xea, 0x16, 0xcf, 0x4b, 0xd7, 0x46, 0xe3, 0xd0, 0xf2, 0x3c,
+	0x0e, 0xfd, 0x53, 0x89, 0x38, 0x4d, 0x1e, 0x44, 0xf1, 0xf0, 0xf8, 0xfc, 0x79, 0xbf, 0xe0, 0xcf,
+	0x8d, 0x9c, 0x04, 0xb4, 0x6e, 0x3e, 0x77, 0xfe, 0xa2, 0x4a, 0x08, 0xf2, 0x40, 0x45, 0x0d, 0x78,
+	0x30, 0xab, 0xa2, 0x16, 0x48, 0x58, 0x51, 0x0b, 0x04, 0xca, 0x8a, 0x43, 0x61, 0x9e, 0x00, 0x4a,
+	0xa3, 0xd4, 0xeb, 0xa9, 0x82, 0x2a, 0xe6, 0xc9, 0x80, 0x38, 0x4f, 0x06, 0xa2, 0x0c, 0xc9, 0x50,
+	0x0c, 0x84, 0xcc, 0x84, 0x77, 0xec, 0x6a, 0xaa, 0x31, 0x2c, 0x06, 0x1a, 0xa1, 0xcc, 0x10, 0x35,
+	0xf3, 0x7e, 0xcc, 0xb9, 0xaa, 0xa5, 0x86, 0x19, 0xb0, 0x3c, 0x33, 0x20, 0x8a, 0x19, 0x9a, 0x50,
+	0x8a, 0xa1, 0x9d, 0x1c, 0x78, 0x31, 0xef, 0xa8, 0x32, 0x2a, 0x4a, 0x31, 0xa2, 0x58, 0x8a, 0x11,
+	0xa3, 0xcc, 0x1a, 0xe0, 0xdc, 0x26, 0x75, 0xe8, 0xed, 0x0d, 0xf6, 0xf7, 0x79, 0x9c, 0xa8, 0x5a,
+	0xfa, 0xc1, 0x28, 0x73, 0x6d, 0x78, 0x9c, 0xb9, 0x0e, 0x8a, 0x51, 0x20, 0x65, 0xf6, 0x10, 0x6d,
+	0x4d, 0xdb, 0x6b, 0x1f, 0xf0, 0x8e, 0xaa, 0xa9, 0xc6, 0x1a, 0x89, 0xe6, 0xad, 0x91, 0x98, 0xb2,
+	0x46, 0x76, 0x4c, 0xd0, 0x2f, 0xcd, 0x13, 0xf4, 0x7f, 0x2c, 0x91, 0xb5, 0x5b, 0x7e, 0x72, 0x78,
+	0x7c, 0x21, 0x7f, 0xb7, 0x10, 0xf2, 0xeb, 0x39, 0x09, 0xda, 0xb6, 0xf9, 0x02, 0xfe, 0x67, 0x35,
+	0xb2, 0xa4, 0x39, 0xe0, 0x2b, 0x44, 0x4c, 0xc8, 0x18, 0x17, 0x56, 0xa8, 0x78, 0x50, 0x56, 0xc8,
+	0x58, 0xa8, 0xea, 0x38, 0x88, 0xb9, 0xd7, 0x69, 0xed, 0x0d, 0x53, 0x9e, 0xd8, 0x9b, 0x02, 0x44,
+	0xd1, 0xf3, 0x88, 0x51, 0x66, 0x0d, 0x80, 0x3c, 0x10, 0x3d, 0xb3, 0xbf, 0x54, 0x79, 0x60, 0x40,
+	0xcc, 0x03, 0x03, 0x51, 0x86, 0x64, 0x38, 0x7e, 0x42, 0x27, 0x51, 0x71, 0x2c, 0x8e, 0x9f, 0x02,
+	0xc0, 0xe3, 0xa7, 0xe8, 0x52, 0x26, 0x61, 0x60, 0x90, 0x59, 0x57, 0x43, 0x06, 0x9d, 0x71, 0x8a,
+	0x41, 0x65, 0x9b, 0x84, 0xc1, 0x29, 0x22, 0xcb, 0x16, 0xd0, 0x29, 0x2a, 0xc3, 0x94, 0x53, 0x64,
+	0x76, 0x09, 0xd0, 0xb9, 0x47, 0x56, 0xe0, 0xb7, 0xd5, 0xe7, 0x71, 0x9b, 0x87, 0xa9, 0x0a, 0xc8,
+	0xff, 0x1b, 0x65, 0x6e, 0x0e, 0x1f, 0x67, 0xee, 0x19, 0x64, 0xd6, 0x28, 0x65, 0xb9, 0x41, 0x90,
+	0x24, 0x4f, 0xe1, 0x3c, 0xab, 0x5c, 0xbc, 0x84, 0x49, 0x62, 0xc1, 0x98, 0x24, 0x16, 0x48, 0x99,
+	0x3d, 0x04, 0xa6, 0x4a, 0x76, 0x85, 0x9b, 0x97, 0x71, 0xaa, 0x10, 0xc5, 0xa9, 0x42, 0x8c, 0x32,
+	0x6b, 0x80, 0x73, 0x83, 0x2c, 0x88, 0x5e, 0xa2, 0x56, 0x7f, 0x11, 0x5e, 0x12, 0xc1, 0xf0, 0x92,
+	0x7d, 0xca, 0x14, 0xc1, 0x64, 0x56, 0x7d, 0xde, 0xf5, 0xf9, 0x01, 0x4f, 0x9f, 0x46, 0xf1, 0xe1,
+	0x9b, 0xba, 0x3e, 0x5b, 0xe6, 0xcd, 0x97, 0x5f, 0xbf, 0x29, 0x93, 0xba, 0xc5, 0x04, 0xa5, 0x57,
+	0xcc, 0x49, 0xcb, 0xd7, 0x4b, 0x89, 0x28, 0xbd, 0x1a, 0xc3, 0xd2, 0xab, 0x11, 0xca, 0x0c, 0x11,
+	0xb2, 0x45, 0xb6, 0xa3, 0x41, 0x6a, 0xaf, 0x1a, 0x06, 0xc4, 0x6c, 0x31, 0x10, 0x65, 0x48, 0x76,
+	0x3e, 0x26, 0x8b, 0xfd, 0xc3, 0x54, 0x28, 0x97, 0xc9, 0x26, 0x6e, 0x79, 0x14, 0x84, 0xb7, 0x3c,
+	0x0a, 0xa0, 0x4c, 0x93, 0xc0, 0x6c, 0xd1, 0x04, 0xc5, 0xd6, 0x8a, 0xa1, 0x31, 0x34, 0x5b, 0x23,
+	0x94, 0x19, 0xa2, 0x09, 0x82, 0xda, 0x3c, 0x41, 0xf0, 0xef, 0x12, 0x39, 0xbd, 0xdd, 0x1f, 0xb0,
+	0x34, 0x17, 0x02, 0xb7, 0x60, 0xbd, 0x48, 0x63, 0xbf, 0xdd, 0xb2, 0x22, 0x41, 0xd5, 0x79, 0x80,
+	0x1f, 0x78, 0x76, 0x08, 0x23, 0x26, 0xea, 0xbc, 0xee, 0xbc, 0xd0, 0xe6, 0xc6, 0xb9, 0x4d, 0x6a,
+	0x62, 0x0e, 0x85, 0xa7, 0xea, 0xd7, 0xcf, 0x15, 0xf7, 0x69, 0xd2, 0x42, 0x75, 0xe1, 0x05, 0x03,
+	0xad, 0x0b, 0x2f, 0xe8, 0x52, 0x26, 0x61, 0xbc, 0x5f, 0xae, 0xce, 0x73, 0xbf, 0xfc, 0xeb, 0x0a,
+	0x59, 0x36, 0xd2, 0xdf, 0x1d, 0xe9, 0xde, 0xf8, 0x9b, 0x9a, 0x9f, 0x94, 0xc9, 0xba, 0xda, 0x81,
+	0x1f, 0x7f, 0xcc, 0xde, 0xcb, 0xc7, 0xec, 0xe6, 0xb4, 0xb3, 0xc5, 0x6b, 0x8a, 0xdb, 0xef, 0x90,
+	0x93, 0x39, 0x05, 0x2f, 0x7f, 0x4d, 0xf3, 0x45, 0x99, 0x9c, 0x95, 0x7b, 0xf1, 0xe3, 0x77, 0xec,
+	0xdd, 0xbc, 0x63, 0xcf, 0x4f, 0x39, 0x64, 0xbc, 0x26, 0xbf, 0xfe, 0xab, 0x42, 0x56, 0x6c, 0x05,
+	0xef, 0xce, 0x24, 0x5f, 0x8a, 0x33, 0x09, 0xfd, 0x4f, 0x89, 0x38, 0xb0, 0x31, 0x3f, 0xfe, 0xd8,
+	0xff, 0x76, 0x3e, 0xf6, 0x37, 0x26, 0x4e, 0x1b, 0xaf, 0x29, 0xf2, 0x7f, 0x55, 0x25, 0x04, 0xc5,
+	0x43, 0x78, 0x76, 0xfc, 0xe4, 0xb0, 0x65, 0x9d, 0x50, 0x44, 0x78, 0x1a, 0x10, 0xc3, 0xd3, 0x40,
+	0x94, 0x21, 0x19, 0xa6, 0x45, 0x74, 0xec, 0x00, 0x17, 0x9e, 0x43, 0x14, 0x3d, 0x87, 0x18, 0x65,
+	0xd6, 0x00, 0x63, 0x85, 0x15, 0xe4, 0x68, 0x85, 0x8a, 0x72, 0xdb, 0x0a, 0x19, 0xe6, 0x48, 0x76,
+	0xbe, 0x47, 0xd6, 0x64, 0xc7, 0xca, 0x5f, 0x19, 0xef, 0xd7, 0x46, 0x99, 0x3b, 0x41, 0x1b, 0x67,
+	0xee, 0x86, 0x2d, 0xce, 0xce, 0xe0, 0x89, 0xc1, 0xb0, 0xbf, 0x3b, 0xdc, 0x6b, 0xc1, 0x41, 0x47,
+	0x25, 0x81, 0xd8, 0xdf, 0x29, 0x08, 0xf7, 0x77, 0x0a, 0xa0, 0x4c, 0x93, 0xc0, 0x37, 0x87, 0x7b,
+	0x2d, 0xd8, 0xb4, 0xa7, 0x3c, 0x54, 0xa1, 0x2f, 0x7c, 0x83, 0x28, 0xfa, 0x06, 0x31, 0xca, 0xac,
+	0x01, 0x90, 0xc2, 0x51, 0x3f, 0x91, 0xea, 0xad, 0xdb, 0x4d, 0x8d, 0x61, 0x0a, 0x6b, 0x84, 0x32,
+	0x43, 0x04, 0xc7, 0x42, 0x5b, 0x9c, 0x1b, 0xd4, 0x51, 0x47, 0x38, 0xd6, 0x80, 0xe8, 0x58, 0x03,
+	0x51, 0x86, 0x64, 0xb1, 0x10, 0xab, 0x9d, 0xf6, 0x1b, 0xbe, 0x10, 0xe7, 0xac, 0x7c, 0xe5, 0x69,
+	0xf3, 0x45, 0x99, 0x9c, 0xcc, 0x69, 0xf8, 0x32, 0x9e, 0x39, 0x68, 0x44, 0x36, 0x9a, 0x51, 0xe8,
+	0xa7, 0x51, 0xec, 0x87, 0xdd, 0xed, 0x28, 0xdc, 0xf7, 0xbb, 0xfa, 0xbf, 0xf1, 0x1d, 0x52, 0xf5,
+	0x61, 0xd3, 0x5b, 0x12, 0x53, 0x73, 0x25, 0xbf, 0x94, 0x17, 0x78, 0xf0, 0xa0, 0xd7, 0x8e, 0x82,
+	0x40, 0xa4, 0xa3, 0x3a, 0xe8, 0xc9, 0x3e, 0x65, 0x8a, 0x40, 0xfb, 0xa4, 0x31, 0xa9, 0x50, 0x05,
+	0xe0, 0xeb, 0xd1, 0xf8, 0xbb, 0x0a, 0x39, 0x3b, 0x8d, 0xdb, 0x79, 0x4c, 0x4e, 0xa9, 0x27, 0x02,
+	0x61, 0xca, 0xe3, 0x27, 0x5e, 0x4f, 0x28, 0xae, 0xc9, 0x9b, 0xf6, 0x3c, 0x05, 0x6f, 0xda, 0xf3,
+	0x38, 0x65, 0x85, 0x81, 0x4e, 0x9b, 0x38, 0xed, 0xa8, 0xd7, 0xe3, 0xed, 0x34, 0x8a, 0x51, 0x70,
+	0x59, 0x08, 0x16, 0xff, 0xda, 0x4f, 0x52, 0xf1, 0x5f, 0xfb, 0x49, 0x1a, 0x65, 0x53, 0x18, 0x9c,
+	0x16, 0x39, 0x9d, 0xc0, 0xea, 0x37, 0xe8, 0x71, 0xd4, 0x51, 0x11, 0x3a, 0xbe, 0x3a, 0xca, 0xdc,
+	0x49, 0xe2, 0x38, 0x73, 0x1b, 0xea, 0x61, 0x40, 0x91, 0x44, 0xd9, 0xe4, 0x70, 0x70, 0x4d, 0xe0,
+	0xfd, 0xa0, 0x75, 0x10, 0x25, 0x69, 0xab, 0x1d, 0x0d, 0x42, 0x19, 0x59, 0xca, 0x35, 0x79, 0x0a,
+	0xba, 0x26, 0x8f, 0x53, 0x56, 0x18, 0x08, 0x29, 0x22, 0x9d, 0x95, 0xa6, 0xf2, 0x5a, 0xa9, 0x26,
+	0x53, 0x44, 0x82, 0x3b, 0x3b, 0xf7, 0x31, 0x45, 0x0c, 0x44, 0x19, 0x92, 0xe9, 0x3f, 0xca, 0xe4,
+	0xdc, 0x9d, 0x30, 0x49, 0xbd, 0x5e, 0x6f, 0x87, 0xf7, 0x78, 0x37, 0xf6, 0xf6, 0xdf, 0x82, 0x87,
+	0x1c, 0x9f, 0x92, 0xe5, 0xfe, 0x60, 0xaf, 0xe7, 0xb7, 0xf1, 0xed, 0x8a, 0xf8, 0x6c, 0x03, 0xe2,
+	0x67, 0x1b, 0x88, 0x32, 0x24, 0x83, 0x80, 0x41, 0xc2, 0x63, 0x59, 0x95, 0x6b, 0x28, 0xc0, 0x80,
+	0x28, 0xc0, 0x40, 0x94, 0x21, 0x19, 0xbe, 0x35, 0x49, 0x0e, 0x5a, 0x87, 0x7c, 0xa8, 0xde, 0x0b,
+	0x89, 0x6f, 0x55, 0x10, 0x7e, 0xab, 0x02, 0x28, 0xd3, 0xa4, 0xeb, 0x7f, 0xad, 0x93, 0x4a, 0xf3,
+	0xe1, 0x03, 0xa7, 0x4b, 0x36, 0x6e, 0xf3, 0x34, 0xf7, 0x6c, 0x48, 0xff, 0x99, 0xfa, 0x7e, 0x2e,
+	0x4b, 0x67, 0xbc, 0x2c, 0xda, 0x7c, 0xff, 0xa8, 0x07, 0x1a, 0x3a, 0xff, 0xe9, 0x09, 0x27, 0x22,
+	0x17, 0xa6, 0x28, 0x32, 0x7f, 0xdb, 0xcc, 0xa7, 0xec, 0xea, 0xb4, 0xe3, 0xdc, 0x0c, 0x85, 0x0f,
+	0xc9, 0xaa, 0x50, 0x68, 0x7d, 0xd1, 0xc5, 0x82, 0x92, 0xbc, 0xf0, 0x8b, 0xd3, 0xfe, 0x83, 0xb6,
+	0x04, 0x7e, 0x46, 0xce, 0x58, 0x02, 0x8d, 0xe5, 0x47, 0x0b, 0xbd, 0x3c, 0xeb, 0xcf, 0x2d, 0x4b,
+	0xf0, 0x77, 0x89, 0xa3, 0x05, 0x5b, 0xff, 0xbc, 0x1c, 0x2d, 0xd7, 0x9d, 0xf1, 0x27, 0x8f, 0x25,
+	0xf6, 0x11, 0x59, 0xd3, 0x62, 0xcd, 0xfd, 0xf6, 0xd1, 0x42, 0x2f, 0x4d, 0xbd, 0x46, 0x9f, 0xee,
+	0x02, 0xfb, 0x4a, 0xef, 0x45, 0x5c, 0x30, 0xe5, 0x7a, 0x93, 0x9e, 0x70, 0xbe, 0x4f, 0xd6, 0x85,
+	0x60, 0xf3, 0x92, 0x4b, 0x4f, 0x19, 0x2d, 0x88, 0x9e, 0xf2, 0xd4, 0x6b, 0x73, 0x6b, 0xfa, 0xc5,
+	0x94, 0x25, 0x9e, 0x93, 0xf3, 0x13, 0xe2, 0xcd, 0x04, 0xce, 0xa3, 0x82, 0xce, 0xbe, 0x47, 0xb0,
+	0xd4, 0xb4, 0x49, 0x23, 0xaf, 0xc6, 0x9a, 0xce, 0x79, 0xb4, 0x5c, 0x99, 0x79, 0xa8, 0xb6, 0x94,
+	0xb4, 0xc8, 0xb9, 0xbc, 0x12, 0x33, 0xb9, 0xf3, 0xa8, 0x70, 0x67, 0x9c, 0x5d, 0x8e, 0x72, 0x96,
+	0x3d, 0xd5, 0x2f, 0xee, 0xac, 0xa9, 0x3b, 0x52, 0x31, 0xe5, 0x2b, 0x8f, 0xb9, 0x98, 0x0b, 0xb1,
+	0x6e, 0x17, 0x2a, 0xc0, 0x8c, 0xad, 0xcb, 0xe6, 0x07, 0xff, 0x63, 0x94, 0x11, 0x7f, 0x8f, 0xac,
+	0xdc, 0xb6, 0xc5, 0x3b, 0x39, 0x46, 0xf1, 0x60, 0x77, 0x7e, 0x61, 0x4d, 0x72, 0x8a, 0xf1, 0xe4,
+	0x95, 0x89, 0xdb, 0x25, 0xab, 0x85, 0xc5, 0xce, 0x79, 0x2f, 0xc7, 0x3b, 0x7d, 0x29, 0x2c, 0x54,
+	0xa8, 0xc2, 0x5b, 0x63, 0x7a, 0xe2, 0xe6, 0xda, 0xef, 0x9f, 0x6f, 0x95, 0xfe, 0xfc, 0x7c, 0xab,
+	0xf4, 0xb7, 0xe7, 0x5b, 0xa5, 0x67, 0x7f, 0xdf, 0x3a, 0xb1, 0xb7, 0x20, 0x9e, 0x28, 0xdf, 0xf8,
+	0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x3b, 0xeb, 0x3e, 0xbe, 0xe6, 0x2c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2340,6 +2724,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MONClient interface {
+	// VM 온디멘드 모니터링 조회
+	GetVMOndemandMonCpuInfo(ctx context.Context, in *VMOndemandMonQryRequest, opts ...grpc.CallOption) (*CpuOndemandInfoResponse, error)
+	GetVMOndemandMonCpuFreqInfo(ctx context.Context, in *VMOndemandMonQryRequest, opts ...grpc.CallOption) (*CpuFreqOndemandInfoResponse, error)
+	// VM 모니터링 조회
 	GetVMMonCpuInfo(ctx context.Context, in *VMMonQryRequest, opts ...grpc.CallOption) (*CpuInfoResponse, error)
 	GetVMMonCpuFreqInfo(ctx context.Context, in *VMMonQryRequest, opts ...grpc.CallOption) (*CpuFreqInfoResponse, error)
 	GetVMMonMemoryInfo(ctx context.Context, in *VMMonQryRequest, opts ...grpc.CallOption) (*MemoryInfoResponse, error)
@@ -2362,6 +2750,24 @@ type mONClient struct {
 
 func NewMONClient(cc *grpc.ClientConn) MONClient {
 	return &mONClient{cc}
+}
+
+func (c *mONClient) GetVMOndemandMonCpuInfo(ctx context.Context, in *VMOndemandMonQryRequest, opts ...grpc.CallOption) (*CpuOndemandInfoResponse, error) {
+	out := new(CpuOndemandInfoResponse)
+	err := c.cc.Invoke(ctx, "/cbdragonfly.MON/GetVMOndemandMonCpuInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mONClient) GetVMOndemandMonCpuFreqInfo(ctx context.Context, in *VMOndemandMonQryRequest, opts ...grpc.CallOption) (*CpuFreqOndemandInfoResponse, error) {
+	out := new(CpuFreqOndemandInfoResponse)
+	err := c.cc.Invoke(ctx, "/cbdragonfly.MON/GetVMOndemandMonCpuFreqInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *mONClient) GetVMMonCpuInfo(ctx context.Context, in *VMMonQryRequest, opts ...grpc.CallOption) (*CpuInfoResponse, error) {
@@ -2492,6 +2898,10 @@ func (c *mONClient) InstallTelegraf(ctx context.Context, in *InstallTelegrafRequ
 
 // MONServer is the server API for MON service.
 type MONServer interface {
+	// VM 온디멘드 모니터링 조회
+	GetVMOndemandMonCpuInfo(context.Context, *VMOndemandMonQryRequest) (*CpuOndemandInfoResponse, error)
+	GetVMOndemandMonCpuFreqInfo(context.Context, *VMOndemandMonQryRequest) (*CpuFreqOndemandInfoResponse, error)
+	// VM 모니터링 조회
 	GetVMMonCpuInfo(context.Context, *VMMonQryRequest) (*CpuInfoResponse, error)
 	GetVMMonCpuFreqInfo(context.Context, *VMMonQryRequest) (*CpuFreqInfoResponse, error)
 	GetVMMonMemoryInfo(context.Context, *VMMonQryRequest) (*MemoryInfoResponse, error)
@@ -2512,6 +2922,12 @@ type MONServer interface {
 type UnimplementedMONServer struct {
 }
 
+func (*UnimplementedMONServer) GetVMOndemandMonCpuInfo(ctx context.Context, req *VMOndemandMonQryRequest) (*CpuOndemandInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVMOndemandMonCpuInfo not implemented")
+}
+func (*UnimplementedMONServer) GetVMOndemandMonCpuFreqInfo(ctx context.Context, req *VMOndemandMonQryRequest) (*CpuFreqOndemandInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVMOndemandMonCpuFreqInfo not implemented")
+}
 func (*UnimplementedMONServer) GetVMMonCpuInfo(ctx context.Context, req *VMMonQryRequest) (*CpuInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVMMonCpuInfo not implemented")
 }
@@ -2557,6 +2973,42 @@ func (*UnimplementedMONServer) InstallTelegraf(ctx context.Context, req *Install
 
 func RegisterMONServer(s *grpc.Server, srv MONServer) {
 	s.RegisterService(&_MON_serviceDesc, srv)
+}
+
+func _MON_GetVMOndemandMonCpuInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VMOndemandMonQryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MONServer).GetVMOndemandMonCpuInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cbdragonfly.MON/GetVMOndemandMonCpuInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MONServer).GetVMOndemandMonCpuInfo(ctx, req.(*VMOndemandMonQryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MON_GetVMOndemandMonCpuFreqInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VMOndemandMonQryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MONServer).GetVMOndemandMonCpuFreqInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cbdragonfly.MON/GetVMOndemandMonCpuFreqInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MONServer).GetVMOndemandMonCpuFreqInfo(ctx, req.(*VMOndemandMonQryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MON_GetVMMonCpuInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2816,6 +3268,14 @@ var _MON_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MONServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetVMOndemandMonCpuInfo",
+			Handler:    _MON_GetVMOndemandMonCpuInfo_Handler,
+		},
+		{
+			MethodName: "GetVMOndemandMonCpuFreqInfo",
+			Handler:    _MON_GetVMOndemandMonCpuFreqInfo_Handler,
+		},
+		{
 			MethodName: "GetVMMonCpuInfo",
 			Handler:    _MON_GetVMMonCpuInfo_Handler,
 		},
@@ -2961,10 +3421,24 @@ func (m *Tags) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.HostId) > 0 {
-		i -= len(m.HostId)
-		copy(dAtA[i:], m.HostId)
-		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.HostId)))
+	if len(m.VmId) > 0 {
+		i -= len(m.VmId)
+		copy(dAtA[i:], m.VmId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.VmId)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.McisId) > 0 {
+		i -= len(m.McisId)
+		copy(dAtA[i:], m.McisId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.McisId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.NsId) > 0 {
+		i -= len(m.NsId)
+		copy(dAtA[i:], m.NsId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.NsId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -3013,6 +3487,61 @@ func (m *VMMonQryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.PeriodType)
 		copy(dAtA[i:], m.PeriodType)
 		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.PeriodType)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.VmId) > 0 {
+		i -= len(m.VmId)
+		copy(dAtA[i:], m.VmId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.VmId)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.McisId) > 0 {
+		i -= len(m.McisId)
+		copy(dAtA[i:], m.McisId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.McisId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.NsId) > 0 {
+		i -= len(m.NsId)
+		copy(dAtA[i:], m.NsId)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.NsId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *VMOndemandMonQryRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VMOndemandMonQryRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VMOndemandMonQryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.AgentIp) > 0 {
+		i -= len(m.AgentIp)
+		copy(dAtA[i:], m.AgentIp)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.AgentIp)))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -3091,6 +3620,236 @@ func (m *VMLatestMonQryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.NsId)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CpuOndemandInfoResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CpuOndemandInfoResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CpuOndemandInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Values) > 0 {
+		for iNdEx := len(m.Values) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Values[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCbdragonfly(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Time) > 0 {
+		i -= len(m.Time)
+		copy(dAtA[i:], m.Time)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.Time)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Tags != nil {
+		{
+			size, err := m.Tags.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCbdragonfly(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CpuOndemandInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CpuOndemandInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CpuOndemandInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.CpuSintr != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuSintr))))
+		i--
+		dAtA[i] = 0x31
+	}
+	if m.CpuHintr != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuHintr))))
+		i--
+		dAtA[i] = 0x29
+	}
+	if m.CpuIowait != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuIowait))))
+		i--
+		dAtA[i] = 0x21
+	}
+	if m.CpuIdle != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuIdle))))
+		i--
+		dAtA[i] = 0x19
+	}
+	if m.CpuSystem != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuSystem))))
+		i--
+		dAtA[i] = 0x11
+	}
+	if m.CpuUtilization != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuUtilization))))
+		i--
+		dAtA[i] = 0x9
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CpuFreqOndemandInfoResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CpuFreqOndemandInfoResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CpuFreqOndemandInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Values) > 0 {
+		for iNdEx := len(m.Values) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Values[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCbdragonfly(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Time) > 0 {
+		i -= len(m.Time)
+		copy(dAtA[i:], m.Time)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.Time)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Tags != nil {
+		{
+			size, err := m.Tags.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCbdragonfly(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintCbdragonfly(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CpuFreqOndemandInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CpuFreqOndemandInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CpuFreqOndemandInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.CpuSpeed != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.CpuSpeed))))
+		i--
+		dAtA[i] = 0x9
 	}
 	return len(dAtA) - i, nil
 }
@@ -4598,7 +5357,15 @@ func (m *Tags) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.HostId)
+	l = len(m.NsId)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.McisId)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.VmId)
 	if l > 0 {
 		n += 1 + l + sovCbdragonfly(uint64(l))
 	}
@@ -4644,6 +5411,34 @@ func (m *VMMonQryRequest) Size() (n int) {
 	return n
 }
 
+func (m *VMOndemandMonQryRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.NsId)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.McisId)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.VmId)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.AgentIp)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *VMLatestMonQryRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4665,6 +5460,111 @@ func (m *VMLatestMonQryRequest) Size() (n int) {
 	l = len(m.StatisticsCriteria)
 	if l > 0 {
 		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CpuOndemandInfoResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if m.Tags != nil {
+		l = m.Tags.Size()
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.Time)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if len(m.Values) > 0 {
+		for _, e := range m.Values {
+			l = e.Size()
+			n += 1 + l + sovCbdragonfly(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CpuOndemandInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CpuUtilization != 0 {
+		n += 9
+	}
+	if m.CpuSystem != 0 {
+		n += 9
+	}
+	if m.CpuIdle != 0 {
+		n += 9
+	}
+	if m.CpuIowait != 0 {
+		n += 9
+	}
+	if m.CpuHintr != 0 {
+		n += 9
+	}
+	if m.CpuSintr != 0 {
+		n += 9
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CpuFreqOndemandInfoResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if m.Tags != nil {
+		l = m.Tags.Size()
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	l = len(m.Time)
+	if l > 0 {
+		n += 1 + l + sovCbdragonfly(uint64(l))
+	}
+	if len(m.Values) > 0 {
+		for _, e := range m.Values {
+			l = e.Size()
+			n += 1 + l + sovCbdragonfly(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *CpuFreqOndemandInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CpuSpeed != 0 {
+		n += 9
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -5531,7 +6431,7 @@ func (m *Tags) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HostId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field NsId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5559,7 +6459,71 @@ func (m *Tags) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.HostId = string(dAtA[iNdEx:postIndex])
+			m.NsId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field McisId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.McisId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VmId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5832,6 +6796,188 @@ func (m *VMMonQryRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *VMOndemandMonQryRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCbdragonfly
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VMOndemandMonQryRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VMOndemandMonQryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NsId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NsId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field McisId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.McisId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VmId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AgentIp", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AgentIp = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCbdragonfly(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *VMLatestMonQryRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5989,6 +7135,567 @@ func (m *VMLatestMonQryRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.StatisticsCriteria = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCbdragonfly(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CpuOndemandInfoResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCbdragonfly
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CpuOndemandInfoResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CpuOndemandInfoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tags", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Tags == nil {
+				m.Tags = &Tags{}
+			}
+			if err := m.Tags.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Time = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Values", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Values = append(m.Values, &CpuOndemandInfo{})
+			if err := m.Values[len(m.Values)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCbdragonfly(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CpuOndemandInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCbdragonfly
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CpuOndemandInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CpuOndemandInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuUtilization", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuUtilization = float64(math.Float64frombits(v))
+		case 2:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuSystem", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuSystem = float64(math.Float64frombits(v))
+		case 3:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuIdle", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuIdle = float64(math.Float64frombits(v))
+		case 4:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuIowait", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuIowait = float64(math.Float64frombits(v))
+		case 5:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuHintr", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuHintr = float64(math.Float64frombits(v))
+		case 6:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuSintr", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuSintr = float64(math.Float64frombits(v))
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCbdragonfly(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CpuFreqOndemandInfoResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCbdragonfly
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CpuFreqOndemandInfoResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CpuFreqOndemandInfoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tags", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Tags == nil {
+				m.Tags = &Tags{}
+			}
+			if err := m.Tags.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Time = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Values", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCbdragonfly
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Values = append(m.Values, &CpuInfo{})
+			if err := m.Values[len(m.Values)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCbdragonfly(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCbdragonfly
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CpuFreqOndemandInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCbdragonfly
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CpuFreqOndemandInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CpuFreqOndemandInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CpuSpeed", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.CpuSpeed = float64(math.Float64frombits(v))
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCbdragonfly(dAtA[iNdEx:])

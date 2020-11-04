@@ -16,7 +16,7 @@ require (
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f // indirect
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
 	github.com/influxdata/influxdb v1.7.8 // indirect
 	github.com/influxdata/influxdb-client-go v0.0.1
@@ -28,9 +28,13 @@ require (
 	github.com/shaodan/kapacitor-client v0.0.0-20181228024026-84c816949946
 	github.com/sirupsen/logrus v1.6.0
 	github.com/snowzach/rotatefilehook v0.0.0-20180327172521-2f64f265f58c // indirect
+	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	go.etcd.io/etcd v3.3.18+incompatible
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 	google.golang.org/grpc v1.33.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1 // indirect
+	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+	gopkg.in/yaml.v2 v2.3.0
 )

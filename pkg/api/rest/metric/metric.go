@@ -11,7 +11,7 @@ import (
 // 멀티 클라우드 인프라 서비스 개별 VM 모니터링 정보 조회
 func GetVMMonInfo(c echo.Context) error {
 	// Path 파라미터 가져오기
-	nsId := c.Param("ns")
+	nsId := c.Param("ns_id")
 	mcisId := c.Param("mcis_id")
 	vmId := c.Param("vm_id")
 	metricName := c.Param("metric_name")
@@ -30,7 +30,7 @@ func GetVMMonInfo(c echo.Context) error {
 // 멀티 클라우드 인프라 서비스 개별 VM 최신 모니터링 정보 조회
 func GetVMLatestMonInfo(c echo.Context) error {
 	// Path 파라미터 가져오기
-	nsId := c.Param("ns")
+	nsId := c.Param("ns_id")
 	mcisId := c.Param("mcis_id")
 	vmId := c.Param("vm_id")
 	metricName := c.Param("metric_name")

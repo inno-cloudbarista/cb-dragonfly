@@ -15,6 +15,7 @@ type Config struct {
 	APIServer      APIServer
 	Monitoring     Monitoring
 	Kapacitor      Kapacitor
+	GrpcServer     GrpcServer
 }
 
 type InfluxDB struct {
@@ -53,6 +54,10 @@ type Kapacitor struct {
 	EndpointUrl string `json:"endpoint_url" mapstructure:"endpoint_url"`
 }
 
+type GrpcServer struct {
+	Port int
+}
+
 func (kapacitor Kapacitor) GetEndpointUrl() string {
 	return kapacitor.EndpointUrl
 }
@@ -87,6 +92,10 @@ func (config *Config) GetETCDConfig() Etcd {
 
 func (config *Config) GetKapacitorConfig() Kapacitor {
 	return config.Kapacitor
+}
+
+func (config *Config) GetGrpcConfig() GrpcServer {
+	return config.GrpcServer
 }
 
 func loadConfigFromYAML(config *Config) {

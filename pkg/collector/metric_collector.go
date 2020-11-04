@@ -199,7 +199,7 @@ func (mc *MetricCollector) MyMarshal(metric interface{}) (string, error) {
 		bytes, err := json.Marshal(metric)
 		mc.metricL.Unlock()
 		if err != nil {
-			logrus.Error("Failed to marshaling realtime monitoring data to JSON: ", err)
+			logrus.Error("Failed to marshaling realtime common data to JSON: ", err)
 			return "", err
 		}
 		metricVal = fmt.Sprintf("%s", bytes)
