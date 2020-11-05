@@ -14,7 +14,7 @@ kapacitor:
 
 kafka:
   endpoint_url: cb-dragonfly-kafka
-  external_ip: 210.207.104.136
+  external_ip: 127.0.0.1
   external_port: 32000
 
 # collect manager configuration info
