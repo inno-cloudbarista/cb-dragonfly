@@ -4,7 +4,7 @@ Cloud-Barista Integrated Monitoring Framework
 
 ```
 [NOTE]
-CB-Dragonfly is currently under development. (the latest version is 0.2.5 espresso)
+CB-Dragonfly is currently under development. (the latest version is 0.3 espresso)
 So, we do not recommend using the current release in production.
 Please note that the functionalities of CB-Dragonfly are not stable and secure yet.
 If you have any difficulties in using CB-Dragonfly, please let us know.
