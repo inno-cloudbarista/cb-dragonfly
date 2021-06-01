@@ -116,7 +116,7 @@ func (pc PullCaller) pullMetric(uuid string, agent metadata.AgentInfo) {
 		metricVal := metricData["values"].(map[string]interface{})
 
 		// 메트릭 정보 InfluxDB 저장
-		err = influxdbv1.GetInstance().WriteOnDemandMetric(metricName, tagArr, metricVal)
+		err = influxdbv1.GetInstance().WriteOnDemandMetric(influxdbv1.PullDatabase, metricName, tagArr, metricVal)
 		if err != nil {
 			fmt.Println(err)
 		}
