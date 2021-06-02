@@ -30,9 +30,7 @@ func NewPullAggregator() (*PullAggregator, error) {
 }
 
 func (pa *PullAggregator) StartAggregate() error {
-	metricArr := []types.MetricType{types.CPU, types.CPUFREQ, types.DISK, types.NET}
-	//metricArr := []types.MetricType{types.NET}
-	//aggregtateTypeArr := []types.AggregateType{types.MIN, types.AVG, types.MAX, types.LAST}
+	metricArr := []types.Metric{types.Cpu, types.CpuFrequency, types.Memory, types.Disk, types.Network, types.DiskIO}
 	aggregateInterval := time.Duration(config.GetInstance().Monitoring.PullerAggregateInterval)
 	for {
 		time.Sleep(aggregateInterval * time.Second)
@@ -53,7 +51,7 @@ func (pa *PullAggregator) StartAggregate() error {
 	}
 }
 
-func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInfo, metricArr []types.MetricType, aggregateType string) {
+func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInfo, metricArr []types.Metric, aggregateType string) {
 	for _, agent := range agentList {
 		for _, metricKind := range metricArr {
 			//receivedMetric, err := pa.Storage.ReadMetric(config.GetInstance().Monitoring.DefaultPolicy == types.PUSH_POLICY, agent.AgentID, metricKind.ToString(), "m", aggregateType, "5m")
@@ -61,7 +59,7 @@ func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInf
 			var err error
 			//var calculatedMetric interface{}
 			var mappedMetric interface{}
-			receivedMetric, err = pa.Storage.ReadMetric(config.GetInstance().Monitoring.DefaultPolicy == types.PUSH_POLICY, agent.AgentID, metricKind.ToString(), "m", aggregateType, "5m")
+			receivedMetric, err = pa.Storage.ReadMetric(config.GetInstance().Monitoring.DefaultPolicy == types.PUSH_POLICY, agent.VmId, metricKind.ToAgentMetricKey(), "m", aggregateType, "5m")
 			if err != nil {
 				logrus.Println(err)
 			}
@@ -73,7 +71,7 @@ func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInf
 			var valueLength float64
 			tagArr := map[string]string{}
 			reqValue := map[string]interface{}{}
-			if metricKind.ToString() == types.NET.ToString() || metricKind.ToString() == types.DISKIO.ToString() {
+			if metricKind.ToString() == types.Network.ToString() || metricKind.ToString() == types.DiskIO.ToString() {
 				for k, v := range mappedMetric.(map[string]interface{}) {
 					if k == "values" {
 						for _, vv := range v.([]interface{}) {
@@ -128,9 +126,11 @@ func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInf
 							continue
 						}
 						if v == nil {
-							v = float64(0)
+							v = json.Number("0")
 						}
-						reqValue[k] = v
+						inputData, _ := v.(json.Number).Float64()
+						reqValue[k] = inputData
+
 					}
 				}
 
@@ -139,28 +139,7 @@ func (pa *PullAggregator) AggregateMetric(agentList map[string]metadata.AgentInf
 			if err != nil {
 				logrus.Println(err)
 			}
-			//fmt.Println(metricName)
-			//convertedMetric := mappedMetric.(map[string]interface{})
-			//fmt.Println(convertedMetric)
-			//metricName := convertedMetric["name"].(string)
-			//tagArr := map[string]string{}
-			//for k, v := range convertedMetric["tags"].(map[string]string) {
-			//	tagArr[k] = v
-			//}
-			//metricValue := convertedMetric["values"].([]interface{})
-			//reqValue := map[string]interface{}{}
-			//for _, value := range metricValue {
-			//	for k, v := range value.(map[string]interface{}) {
-			//		if k == "time" {
-			//			continue
-			//		}
-			//		reqValue[k] = v
-			//	}
-			//}
-			//fmt.Println(metricName)
-			//fmt.Println(tagArr)
-			//fmt.Println(metricValue)
-
+			// TODO Aggregate 이후 데이터베이스의 이전 메트릭 데이터 삭제 로직 추가 필요
 		}
 	}
 }

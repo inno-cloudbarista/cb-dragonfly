@@ -263,7 +263,7 @@ func (s Storage) buildQuery(isPUSH bool, vmId string, metric string, period stri
 		case "net":
 
 			fieldArr := []string{"bytes_recv", "bytes_sent", "packets_recv", "packets_sent", "err_in", "err_out", "drop_in", "drop_out"}
-			query := s.getPerSecMetric(vmId, metric, period, fieldArr, duration)
+			query := s.getPerSecMetric(isPUSH, vmId, metric, period, fieldArr, duration)
 			return query, nil
 
 		case "mem":
@@ -288,7 +288,7 @@ func (s Storage) buildQuery(isPUSH bool, vmId string, metric string, period stri
 		case "diskio":
 
 			fieldArr := []string{"read_bytes", "write_bytes", "reads", "writes", "read_time", "write_time"}
-			query := s.getPerSecMetric(vmId, metric, period, fieldArr, duration)
+			query := s.getPerSecMetric(isPUSH, vmId, metric, period, fieldArr, duration)
 			return query, nil
 
 		default:
@@ -304,33 +304,33 @@ func (s Storage) buildQuery(isPUSH bool, vmId string, metric string, period stri
 		switch metric {
 		case "cpu":
 			query = influxBuilder.NewQuery().On(metric).
-				Field("cpu_utilization", aggregateType).
-				Field("cpu_system", aggregateType).
+				Field("cpu_guest", aggregateType).
+				Field("cpu_guest_nice", aggregateType).
+				Field("cpu_hintr", aggregateType).
 				Field("cpu_idle", aggregateType).
 				Field("cpu_iowait", aggregateType).
-				Field("cpu_irq", aggregateType).
-				Field("cpu_softirq", aggregateType).
-				Field("cpu_user", aggregateType).
 				Field("cpu_nice", aggregateType).
+				Field("cpu_sintr", aggregateType).
 				Field("cpu_steal", aggregateType).
-				Field("cpu_guest", aggregateType).
-				Field("cpu_guest_nice", aggregateType)
+				Field("cpu_system", aggregateType).
+				Field("cpu_user", aggregateType).
+				Field("cpu_utilization", aggregateType)
 		case "cpufreq":
 			query = influxBuilder.NewQuery().On(metric).
 				Field("cpu_speed", aggregateType)
 		case "net":
 			fieldArr := []string{"bytes_in", "bytes_out", "pkts_in", "pkts_out"}
-			query := s.getPerSecMetric(vmId, metric, period, fieldArr, duration)
+			query := s.getPerSecMetric(isPUSH, vmId, metric, period, fieldArr, duration)
 			return query, nil
 		case "mem":
 			query = influxBuilder.NewQuery().On(metric).
-				Field("used_percent", aggregateType).
-				Field("total", aggregateType).
-				Field("used", aggregateType).
-				Field("free", aggregateType).
-				Field("shared", aggregateType).
-				Field("buffered", aggregateType).
-				Field("cached", aggregateType)
+				Field("mem_buffers", aggregateType).
+				Field("mem_cached", aggregateType).
+				Field("mem_free", aggregateType).
+				Field("mem_shared", aggregateType).
+				Field("mem_total", aggregateType).
+				Field("mem_used", aggregateType).
+				Field("mem_utilization", aggregateType)
 		case "disk":
 			query = influxBuilder.NewQuery().On(metric).
 				Field("disk_free", aggregateType).
@@ -343,8 +343,8 @@ func (s Storage) buildQuery(isPUSH bool, vmId string, metric string, period stri
 				Field("ops_write", aggregateType)
 
 		case "diskio":
-			fieldArr := []string{"read_bytes", "write_bytes", "reads", "writes", "read_time", "write_time"}
-			query := s.getPerSecMetric(vmId, metric, period, fieldArr, duration)
+			fieldArr := []string{"kb_read", "kb_write", "ops_read", "ops_write"}
+			query := s.getPerSecMetric(isPUSH, vmId, metric, period, fieldArr, duration)
 			return query, nil
 		default:
 			return "", errors.New("not found metric")
@@ -362,7 +362,7 @@ func (s Storage) buildQuery(isPUSH bool, vmId string, metric string, period stri
 	return queryString, nil
 }
 
-func (s Storage) getPerSecMetric(vmId string, metric string, period string, fieldArr []string, duration string) string {
+func (s Storage) getPerSecMetric(isPUSH bool, vmId, metric, period string, fieldArr []string, duration string) string {
 	var query string
 
 	var timeCriteria string
@@ -386,10 +386,16 @@ func (s Storage) getPerSecMetric(vmId string, metric string, period string, fiel
 			query += ","
 		}
 	}
+	var whereQueryForm string
 
 	// 메트릭 조회 조건 쿼리 생성
-	whereQueryForm := " FROM \"%s\" WHERE time > (now()+1m) - %s AND \"vmId\"='%s' GROUP BY time(%s) fill(0)"
-	query += fmt.Sprintf(whereQueryForm, metric, duration, vmId, timeCriteria)
+	if isPUSH {
+		whereQueryForm = " FROM \"%s\" WHERE time > (now()+1m) - %s AND \"vmId\"='%s' GROUP BY time(%s) GROUP BY tag(%s) fill(0)"
+		query += fmt.Sprintf(whereQueryForm, metric, duration, vmId, timeCriteria)
+	} else {
+		whereQueryForm = " FROM \"%s\" WHERE time > (now()+1m) - %s AND \"vmId\"='%s' GROUP BY time(%s), \"vmId\" fill(0)"
+		query += fmt.Sprintf(whereQueryForm, metric, duration, vmId, timeCriteria)
+	}
 
 	return query
 }

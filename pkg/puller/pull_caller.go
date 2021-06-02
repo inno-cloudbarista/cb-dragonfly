@@ -64,8 +64,7 @@ func (pc PullCaller) healthcheck(uuid string, agent metadata.AgentInfo) error {
 func (pc PullCaller) pullMetric(uuid string, agent metadata.AgentInfo) {
 
 	pullerIdx := time.Now().Unix()
-
-	metricArr := []types.Metric{types.Cpu, types.CpuFrequency, types.Memory, types.Disk, types.Network}
+	metricArr := []types.Metric{types.Cpu, types.CpuFrequency, types.Memory, types.Disk, types.DiskIO, types.Network}
 	for _, pullMetric := range metricArr {
 
 		if agent.AgentState == string(metadata.Disable) || agent.AgentHealth == string(metadata.Unhealthy) {
